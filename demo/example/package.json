@@ -8,6 +8,7 @@
     "@aws-sdk/client-dynamodb": "^3.87.0",
     "aws-cdk-lib": "^2.24.1",
     "constructs": "^10.1.7",
+    "cdk-dynamodb-migrator": "^0.1.0",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
@@ -17,7 +18,6 @@
     "@typescript-eslint/parser": "^5.16.0",
     "aws-cdk": "2.23.0",
     "cdk": "^2.24.1",
-    "dynamodb-migrator": "workspace:^",
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
@@ -33,7 +33,7 @@
   "private": true,
   "scripts": {
     "deploy": "cdk deploy",
-    "test": "yarn test-lint && yarn test-type",
+    "test": "pnpm run test-lint && pnpm run test-type",
     "test-lint": "eslint . --ext js,ts --ignore-path ../../.gitignore",
     "test-type": "tsc --noEmit"
   }

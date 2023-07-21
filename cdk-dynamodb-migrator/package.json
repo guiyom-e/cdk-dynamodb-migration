@@ -1,5 +1,5 @@
 {
-  "name": "dynamodb-migrator",
+  "name": "cdk-dynamodb-migrator",
   "version": "0.1.0",
   "bin": {
     "cdk": "bin/cdk.js"
@@ -37,8 +37,8 @@
         }
       },
       "python": {
-        "distName": "dynamodb-migrator",
-        "module": "dynamodb-migrator"
+        "distName": "cdk-dynamodb-migrator",
+        "module": "cdk-dynamodb-migrator"
       },
       "dotnet": {
         "namespace": "Dynamodb.Migrator",

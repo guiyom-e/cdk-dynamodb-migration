@@ -1,10 +1,10 @@
 # Contributing
 
-## Testing `dynamodb-migrator`
+## Testing `cdk-dynamodb-migrator`
 
 ```sh
-cd dynamodb-migrator
+cd cdk-dynamodb-migrator
 pnpm link --global
 cd ../demo/example
-pnpm link --global dynamodb-migrator
+pnpm link --global cdk-dynamodb-migrator
 ```
