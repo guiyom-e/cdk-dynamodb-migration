@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "bin": {
     "cdk": "bin/cdk.js"
-  }, "main": "./build/index.js",
+  },
+  "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "files": [
     "lib/**/*.js",
@@ -12,6 +13,7 @@
   "dependencies": {
     "aws-cdk-lib": "2.86.0",
     "constructs": "^10.0.0",
+    "esbuild": "^0.18.17",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
