@@ -16,3 +16,5 @@ new DynamoDBMigratorStack(app, 'DynamoDBMigrator', {
   // env: { account: '123456789012', region: 'us-east-1' },
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+
+//Add another stack that comes from the app with the migration lambda
