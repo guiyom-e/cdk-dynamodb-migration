@@ -1,70 +1,77 @@
-import * as cdk from 'aws-cdk-lib';
-// import { BillingMode, Table, AttributeType } from 'aws-cdk-lib/aws-dynamodb';
-import {} from 'aws-cdk-lib/aws-stepfunctions';
+import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { BillingMode, Table, AttributeType } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
-import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import { IFunction } from 'aws-cdk-lib/aws-lambda';
+import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import {
+  Fail,
+  Succeed,
+  Choice,
+  Condition,
+  StateMachine,
+} from 'aws-cdk-lib/aws-stepfunctions';
 
-import path = require('path');
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-export class CdkStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+interface TableMigration {
+  type: 'table';
+  table: Table;
+}
+
+interface GenericMigration {
+  type: 'generic';
+}
+
+type Migration = TableMigration | GenericMigration;
+type MigrationStackProps = StackProps &
+  Migration & {
+    migrationLambdaFunction: IFunction;
+    settings?: {
+      versioning?: {
+        enabled: boolean;
+        table?: Table;
+        pk?: string;
+      };
+    };
+  };
+export class MigrationStack extends Stack {
+  constructor(scope: Construct, id: string, props: MigrationStackProps) {
     super(scope, id, props);
+    const { migrationLambdaFunction } = props;
 
-    console.log('path', path.join(__dirname, 'runMigrationsLambda/index.ts'));
+    const runMigrationsJob = new LambdaInvoke(this, 'Run Migrations Job', {
+      lambdaFunction: migrationLambdaFunction,
+      // Lambda's result is in the attribute `guid`
+      outputPath: '$.Payload',
+    });
 
-    console.log(
-      'code',
-      lambda.Code.fromAsset(path.join(__dirname, 'runMigrationsLambda')),
-    );
-
-    const runMigrationsFunction = new NodejsFunction(
-      this,
-      'runMigrationsFunction',
-      {
-        runtime: lambda.Runtime.NODEJS_18_X,
-        handler: 'index.handler',
-        entry: path.join(__dirname, 'runMigrationsLambda/index.ts'),
-      },
-    );
-
-    const runMigrationsJob = new tasks.LambdaInvoke(
-      this,
-      'Run Migrations Job',
-      {
-        lambdaFunction: runMigrationsFunction,
-        // Lambda's result is in the attribute `guid`
-        outputPath: '$.Payload',
-      },
-    );
-
-    const jobFailed = new sfn.Fail(this, 'Job Failed', {
+    const jobFailed = new Fail(this, 'Job Failed', {
       cause: 'AWS Batch Job Failed',
       error: 'DescribeJob returned FAILED',
     });
 
     const definition = runMigrationsJob.next(
-      new sfn.Choice(this, 'Job Complete?')
-        .when(sfn.Condition.stringEquals('$.status', 'FAILED'), jobFailed)
+      new Choice(this, 'Job Complete?')
+        .when(Condition.stringEquals('$.status', 'FAILED'), jobFailed)
         .when(
-          sfn.Condition.stringEquals('$.status', 'SUCCEEDED'),
-          new sfn.Succeed(this, 'Job Succeeded'),
+          Condition.stringEquals('$.status', 'SUCCEEDED'),
+          new Succeed(this, 'Job Succeeded'),
         ),
     );
 
-    // add step function here
-    // const table = new Table(this, 'Table', {
-    //   partitionKey: { name: 'modelName', type: AttributeType.STRING },
-    //   sortKey: { name: 'id', type: AttributeType.STRING },
-    //   billingMode: BillingMode.PAY_PER_REQUEST,
-    // });
+    // Versioning
+    if (props.settings?.versioning?.enabled) {
+      if (!props.settings.versioning.table) {
+        new Table(this, 'VersioningTable', {
+          partitionKey: {
+            name: props?.settings?.versioning?.pk ?? '_version',
+            type: AttributeType.STRING,
+          },
+        });
+      }
+    }
 
-    new sfn.StateMachine(this, 'RunMigrationsStateMachine', {
+    new StateMachine(this, 'RunMigrationsStateMachine', {
       definition,
-      timeout: cdk.Duration.minutes(5),
+      timeout: Duration.minutes(5),
     });
-
-    // console.log(table.tableName);
   }
 }
