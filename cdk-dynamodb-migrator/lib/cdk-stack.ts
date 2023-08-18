@@ -35,7 +35,7 @@ export class DynamoDBMigratorStack extends cdk.Stack {
       {
         lambdaFunction: runMigrationsFunction,
         // Lambda's result is in the attribute `guid`
-        outputPath: '$.status',
+        outputPath: '$.Payload',
       },
     );
 
