@@ -90,10 +90,14 @@ export class MigrationStack extends Stack {
 
     const runMigrationsJob = new LambdaInvoke(this, 'RunMigrationJob', {
       lambdaFunction: migrationLambdaFunction,
-      // Lambda's result is in the attribute `guid`
-      outputPath: '$.Payload',
+      outputPath: '$',
+      resultSelector: {
+        'MigrationResult.$': '$.Payload',
+        'TargetVersion.$': '$.TargetVersion',
+      },
     });
 
+    // Success
     const jobSuccess = new DynamoPutItem(this, 'MigrationSuccess', {
       table: this.versioning.table,
       item: {
@@ -101,13 +105,30 @@ export class MigrationStack extends Stack {
           this.versioning.migrationPartitionKey,
         ),
         [this.versioning.sortKeyName]:
-          DynamoAttributeValue.fromString('STATUS'),
-        value: DynamoAttributeValue.fromString('SUCCEEDED'),
+          DynamoAttributeValue.fromString('CURRENT_VERSION'),
+        value: DynamoAttributeValue.fromNumber(
+          JsonPath.numberAt('$.TargetVersion'),
+        ),
         metadata: getMetadata(),
       },
     });
+    jobSuccess.next(
+      new DynamoPutItem(this, 'MigrationSuccess', {
+        table: this.versioning.table,
+        item: {
+          [this.versioning.partitionKeyName]: DynamoAttributeValue.fromString(
+            this.versioning.migrationPartitionKey,
+          ),
+          [this.versioning.sortKeyName]:
+            DynamoAttributeValue.fromString('STATUS'),
+          value: DynamoAttributeValue.fromString('SUCCEEDED'),
+          metadata: getMetadata(),
+        },
+      }),
+    );
     jobSuccess.next(new Succeed(this, 'MigrationSucceeded'));
 
+    // Failure
     const jobFailed = new DynamoPutItem(this, 'MigrationFailure', {
       table: this.versioning.table,
       item: {
@@ -129,7 +150,10 @@ export class MigrationStack extends Stack {
 
     const definition = runMigrationsJob.next(
       new Choice(this, 'IsMigrationComplete')
-        .when(Condition.stringEquals('$.status', 'SUCCEEDED'), jobSuccess)
+        .when(
+          Condition.stringEquals('$.MigrationResult.status', 'SUCCEEDED'),
+          jobSuccess,
+        )
         .otherwise(jobFailed),
     );
 
