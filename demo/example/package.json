@@ -7,8 +7,9 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.405.0",
     "aws-cdk-lib": "^2.94.0",
-    "cdk-dynamodb-migrator": "workspace:*",
-    "constructs": "^10.2.70"
+    "cdk-dynamodb-migrator": "0.1.0",
+    "constructs": "^10.2.70",
+    "migration-helpers": "0.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.4",
@@ -27,7 +28,8 @@
     "prettier": "^3.0.3",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
-    "typescript": "~5.2.2"
+    "typescript": "~5.2.2",
+    "esbuild": "^0.19.2"
   },
   "private": true,
   "scripts": {
