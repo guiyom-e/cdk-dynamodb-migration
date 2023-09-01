@@ -1,0 +1,40 @@
+{
+  "name": "migration-helpers",
+  "description": "A set of helpers for migrations",
+  "version": "0.1.0",
+  "license": "MIT",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore",
+    "format-fix": "prettier --write . --ignore-path ../../.prettierignore",
+    "lint-fix": "pnpm linter-base-config --fix",
+    "lint-fix-all": "pnpm lint-fix .",
+    "linter-base-config": "eslint --ext=js,ts",
+    "package": "pnpm package-transpile && pnpm package-types && pnpm package-types-aliases",
+    "package-transpile": "tsup",
+    "package-types": "tsc -p tsconfig.build.json",
+    "package-types-aliases": "tsc-alias -p tsconfig.build.json",
+    "test": "nx run format-check && nx run test-linter && nx run test-type && nx run test-unit && nx run test-circular",
+    "test-linter": "pnpm linter-base-config .",
+    "test-type": "tsc --noEmit --emitDeclarationOnly false",
+    "test-unit": "jest --coverage --passWithNoTests",
+    "watch": "pnpm clean && concurrently 'pnpm:package-* --watch'"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.1",
+    "concurrently": "^8.0.0",
+    "esbuild": "0.16.17",
+    "eslint": "^8.29.0",
+    "prettier": "^2.8.1",
+    "tsc-alias": "^1.8.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.0"
+  }
+}
