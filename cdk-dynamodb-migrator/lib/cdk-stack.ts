@@ -14,6 +14,7 @@ import {
   Condition,
   StateMachine,
   JsonPath,
+  ChainDefinitionBody,
 } from 'aws-cdk-lib/aws-stepfunctions';
 
 const getMetadata = () =>
@@ -191,7 +192,7 @@ export class MigrationStack extends Stack {
     );
 
     new StateMachine(this, 'RunMigrationsStateMachine', {
-      definition,
+      definitionBody: ChainDefinitionBody.fromChainable(definition),
       timeout: Duration.minutes(5),
     });
   }
