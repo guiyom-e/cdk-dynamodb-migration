@@ -1,14 +1,18 @@
-export const handler = async function ({
-  statusToAnswer,
-}: {
-  statusToAnswer: string;
-}) {
-  if (statusToAnswer === 'SUCCEEDED') return { status: 'SUCCEEDED' };
-  if (statusToAnswer === 'FAILED') return { status: 'FAILED' };
+import { Migration } from '../../../packages/migration';
 
-  if (Math.random() < 0.5) {
-    return { status: 'FAILED' };
+export const handler = async function ({ up = true }: { up?: boolean }) {
+  if (up) {
+    migration.up({ version: 6 });
   } else {
-    return { status: 'SUCCEEDED' };
+    migration.down({ version: 6 });
   }
+};
+
+export const migration: Migration = {
+  up: async function ({ version }) {
+    return { version, status: Math.random() < 0.5 ? 'SUCCEEDED' : 'FAILED' };
+  },
+  down: async function ({ version }) {
+    return { version, status: 'SUCCEEDED' };
+  },
 };
