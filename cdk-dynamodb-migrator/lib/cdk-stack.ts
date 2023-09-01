@@ -18,13 +18,20 @@ import {
 
 const getMetadata = () =>
   DynamoAttributeValue.fromMap({
-    date: DynamoAttributeValue.fromString(
-      JsonPath.stringAt('$$.State.EnteredTime'),
-    ),
-    startedAt: DynamoAttributeValue.fromString(
-      JsonPath.stringAt('$$.Execution.StartTime'),
-    ),
+    date: DynamoAttributeValue.fromString(JsonPath.stateEnteredTime),
+    stateMachineId: DynamoAttributeValue.fromString(JsonPath.stateMachineId),
+    startedAt: DynamoAttributeValue.fromString(JsonPath.executionStartTime),
   });
+
+const getVersionSortKey = () =>
+  DynamoAttributeValue.fromString(
+    JsonPath.format(
+      'VERSION_{}#{}#{}',
+      JsonPath.stringAt('$.targetVersion'),
+      JsonPath.executionStartTime,
+      JsonPath.uuid(),
+    ),
+  );
 
 interface TableMigration {
   type: 'table';
@@ -90,43 +97,50 @@ export class MigrationStack extends Stack {
 
     const runMigrationsJob = new LambdaInvoke(this, 'RunMigrationJob', {
       lambdaFunction: migrationLambdaFunction,
-      outputPath: '$',
       resultSelector: {
-        'MigrationResult.$': '$.Payload',
-        'TargetVersion.$': '$.TargetVersion',
+        'payload.$': '$.Payload',
+        'status.$': '$.Payload.status',
       },
+      resultPath: '$.migrationResponse',
     });
 
     // Success
-    const jobSuccess = new DynamoPutItem(this, 'MigrationSuccess', {
+    const successBranch = new DynamoPutItem(this, 'MigrationSuccess', {
       table: this.versioning.table,
       item: {
         [this.versioning.partitionKeyName]: DynamoAttributeValue.fromString(
           this.versioning.migrationPartitionKey,
         ),
         [this.versioning.sortKeyName]:
-          DynamoAttributeValue.fromString('CURRENT_VERSION'),
-        value: DynamoAttributeValue.fromNumber(
-          JsonPath.numberAt('$.TargetVersion'),
+          DynamoAttributeValue.fromString('CURRENT_STATUS'),
+        status: DynamoAttributeValue.fromString('SUCCEEDED'),
+        // targetVersion must be casted to a string when calling DynamoDB
+        version: DynamoAttributeValue.numberFromString(
+          JsonPath.format('{}', JsonPath.stringAt('$.targetVersion')),
         ),
         metadata: getMetadata(),
       },
+      resultPath: '$.dynamoResponse',
     });
-    jobSuccess.next(
-      new DynamoPutItem(this, 'MigrationSuccess', {
-        table: this.versioning.table,
-        item: {
-          [this.versioning.partitionKeyName]: DynamoAttributeValue.fromString(
-            this.versioning.migrationPartitionKey,
-          ),
-          [this.versioning.sortKeyName]:
-            DynamoAttributeValue.fromString('STATUS'),
-          value: DynamoAttributeValue.fromString('SUCCEEDED'),
-          metadata: getMetadata(),
-        },
-      }),
-    );
-    jobSuccess.next(new Succeed(this, 'MigrationSucceeded'));
+    successBranch
+      .next(
+        new DynamoPutItem(this, 'SetHistoryOnSuccess', {
+          table: this.versioning.table,
+          item: {
+            [this.versioning.partitionKeyName]: DynamoAttributeValue.fromString(
+              this.versioning.migrationPartitionKey,
+            ),
+            [this.versioning.sortKeyName]: getVersionSortKey(),
+            status: DynamoAttributeValue.fromString('SUCCEEDED'),
+            // targetVersion must be casted to a string when calling DynamoDB
+            version: DynamoAttributeValue.numberFromString(
+              JsonPath.format('{}', JsonPath.stringAt('$.targetVersion')),
+            ),
+            metadata: getMetadata(),
+          },
+        }),
+      )
+      .next(new Succeed(this, 'MigrationSucceeded'));
 
     // Failure
     const jobFailed = new DynamoPutItem(this, 'MigrationFailure', {
@@ -136,23 +150,42 @@ export class MigrationStack extends Stack {
           this.versioning.migrationPartitionKey,
         ),
         [this.versioning.sortKeyName]:
-          DynamoAttributeValue.fromString('STATUS'),
-        value: DynamoAttributeValue.fromString('FAILED'),
+          DynamoAttributeValue.fromString('CURRENT_STATUS'),
+        status: DynamoAttributeValue.fromString('FAILED'),
         metadata: getMetadata(),
       },
+      resultPath: '$.dynamoResponse',
     });
-    jobFailed.next(
-      new Fail(this, 'MigrationFailed', {
-        cause: 'See RunMigrationJob for details',
-        error: 'Migration Failed',
-      }),
-    );
+    jobFailed
+      .next(
+        new DynamoPutItem(this, 'SetHistoryOnFailure', {
+          table: this.versioning.table,
+          item: {
+            [this.versioning.partitionKeyName]: DynamoAttributeValue.fromString(
+              this.versioning.migrationPartitionKey,
+            ),
+            [this.versioning.sortKeyName]: getVersionSortKey(),
+            status: DynamoAttributeValue.fromString('FAILED'),
+            // targetVersion must be casted to a string when calling DynamoDB
+            version: DynamoAttributeValue.numberFromString(
+              JsonPath.format('{}', JsonPath.stringAt('$.targetVersion')),
+            ),
+            metadata: getMetadata(),
+          },
+        }),
+      )
+      .next(
+        new Fail(this, 'MigrationFailed', {
+          cause: 'See RunMigrationJob for details',
+          error: 'Migration Failed',
+        }),
+      );
 
     const definition = runMigrationsJob.next(
       new Choice(this, 'IsMigrationComplete')
         .when(
-          Condition.stringEquals('$.MigrationResult.status', 'SUCCEEDED'),
-          jobSuccess,
+          Condition.stringEquals('$.migrationResponse.status', 'SUCCEEDED'),
+          successBranch,
         )
         .otherwise(jobFailed),
     );
