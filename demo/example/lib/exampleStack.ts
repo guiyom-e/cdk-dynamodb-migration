@@ -1,7 +1,9 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
-import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { MigrationConstruct } from 'cdk-dynamodb-migrator';
 import { Construct } from 'constructs';
+import path from 'path';
 
 export class ExampleStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
@@ -12,15 +14,13 @@ export class ExampleStack extends Stack {
         id: 'default',
         migrationHandling: {
           type: 'lambda',
-          migrationLambdaFunction: new Function(
+          migrationLambdaFunction: new NodejsFunction(
             this,
             'MigrationLambdaFunction',
             {
               runtime: Runtime.NODEJS_18_X,
               handler: 'index.handler',
-              code: Code.fromInline(
-                'module.exports = {handler: async () => ({status: "SUCCEEDED"})};',
-              ),
+              entry: path.join(__dirname, 'runMigrationsLambda/index.ts'),
             },
           ),
         },
