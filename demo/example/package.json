@@ -33,8 +33,9 @@
   "private": true,
   "scripts": {
     "deploy": "cdk deploy",
-    "test": "pnpm run test-lint && pnpm run test-type",
+    "test": "pnpm run test-lint && pnpm run test-type && pnpm run test-unit",
     "test-lint": "eslint . --ext js,ts --ignore-path ../../.gitignore",
-    "test-type": "tsc --noEmit"
+    "test-type": "tsc --noEmit",
+    "test-unit": "jest"
   }
 }
