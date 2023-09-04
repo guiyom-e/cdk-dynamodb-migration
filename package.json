@@ -20,5 +20,11 @@
     "demo/*",
     "cdk-dynamodb-migrator"
   ],
+  "scripts": {
+    "test": "pnpm run test-linter && pnpm run test-type && pnpm run test-unit",
+    "test-linter": "eslint .",
+    "test-type": "tsc --noEmit",
+    "test-unit": "jest"
+  },
   "packageManager": "pnpm@8.7.1"
 }

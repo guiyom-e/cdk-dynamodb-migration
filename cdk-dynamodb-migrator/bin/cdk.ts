@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import { App, Stack, StackProps } from 'aws-cdk-lib';
-import { MigrationStack } from '../lib/cdk-stack';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
-import path = require('path');
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
+import path = require('path');
+
+import { MigrationStack } from '../lib/cdk-stack';
 
 const app = new App();
 

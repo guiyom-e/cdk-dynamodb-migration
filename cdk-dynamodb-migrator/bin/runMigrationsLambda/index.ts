@@ -1,14 +1,18 @@
-export const handler = async function ({
+export const handler = async ({
   statusToAnswer,
 }: {
   statusToAnswer: string;
-}) {
-  if (statusToAnswer === 'SUCCEEDED') return { status: 'SUCCEEDED' };
-  if (statusToAnswer === 'FAILED') return { status: 'FAILED' };
+}): Promise<{ status: 'SUCCEEDED' | 'FAILED' }> => {
+  if (statusToAnswer === 'SUCCEEDED') {
+    return await Promise.resolve({ status: 'SUCCEEDED' });
+  }
+  if (statusToAnswer === 'FAILED') {
+    return await Promise.resolve({ status: 'FAILED' });
+  }
 
   if (Math.random() < 0.5) {
-    return { status: 'FAILED' };
+    return await Promise.resolve({ status: 'FAILED' });
   } else {
-    return { status: 'SUCCEEDED' };
+    return await Promise.resolve({ status: 'SUCCEEDED' });
   }
 };
