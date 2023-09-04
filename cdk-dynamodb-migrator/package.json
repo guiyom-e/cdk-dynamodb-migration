@@ -5,6 +5,11 @@
   "author": {
     "name": "Guillaume Égée"
   },
+  "contributors": [
+    {
+      "name": "Zineb El Bachiri"
+    }
+  ],
   "bin": {
     "cdk": "bin/cdk.js"
   },
