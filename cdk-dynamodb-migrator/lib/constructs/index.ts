@@ -7,6 +7,7 @@ import {
   Condition,
   Fail,
   JsonPath,
+  Pass,
   StateMachine,
   Succeed,
 } from 'aws-cdk-lib/aws-stepfunctions';
@@ -104,6 +105,18 @@ export class MigrationConstruct extends Construct {
 
     // STEPS
 
+    // Validate input
+    const validateInput = new Pass(this, 'ValidateInput', {
+      parameters: {
+        request: JsonPath.objectAt('$'),
+        // Validates targetVersion is a number
+        targetVersion: JsonPath.mathAdd(
+          JsonPath.numberAt('$.targetVersion'),
+          0,
+        ),
+      },
+    });
+
     // Check migration version
     const setupFirstVersionIfNotDefined = new DynamoPutItem(
       this,
@@ -149,6 +162,7 @@ export class MigrationConstruct extends Construct {
 
     // Run Migration
     const runMigrationsJob = new LambdaInvoke(this, 'RunMigrationJob', {
+      inputPath: '$.request',
       lambdaFunction: migrationLambdaFunction,
       resultSelector: {
         'payload.$': '$.Payload',
@@ -240,6 +254,7 @@ export class MigrationConstruct extends Construct {
       );
 
     // STATE MACHINE ASSEMBLY
+    validateInput.next(setupFirstVersionIfNotDefined);
 
     setupFirstVersionIfNotDefined.next(shouldRunMigration);
 
@@ -273,10 +288,10 @@ export class MigrationConstruct extends Construct {
         .otherwise(jobFailed),
     );
 
+    const stateMachineDefinition = validateInput;
+
     new StateMachine(this, 'RunMigrationsStateMachine', {
-      definitionBody: ChainDefinitionBody.fromChainable(
-        setupFirstVersionIfNotDefined,
-      ),
+      definitionBody: ChainDefinitionBody.fromChainable(stateMachineDefinition),
       timeout: Duration.minutes(5),
     });
   }
