@@ -25,14 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v3
+      - name: '📥️ Checkout'
+        uses: actions/checkout@v3
         with:
           ref: ${{ env.TARGET_SHA }}
-      - name: Install & cache node dependencies
+      - name: '⚙️📦️ Install & cache node dependencies'
         uses: ./.github/actions/install-node-deps
-      - name: '🧪 Test linter'
-        run: pnpm test-linter
-      - name: '🧪 Test types'
-        run: pnpm test-type
-      - name: '🧪 Run unit tests'
-        run: pnpm test-unit
+      - name: '⚙️🛠️ Build'
+        run: pnpm run build
+      - name: '🧪🖼️ Test linter'
+        run: pnpm run test-linter
+      - name: '🧪🗃️ Test types'
+        run: pnpm run test-type
+      - name: '🧪🔬 Run unit tests'
+        run: pnpm run test-unit

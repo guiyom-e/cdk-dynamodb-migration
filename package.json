@@ -20,6 +20,7 @@
   "packageManager": "pnpm@8.7.1",
   "private": true,
   "scripts": {
+    "build": "pnpm nx run-many --all --target=build",
     "test": "pnpm nx run-many --all --target=test",
     "test-linter": "pnpm nx run-many --all --target=test-linter",
     "test-type": "pnpm nx run-many --all --target=test-type",
