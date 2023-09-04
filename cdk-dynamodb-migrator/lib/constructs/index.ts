@@ -125,7 +125,7 @@ export class MigrationConstruct extends Construct {
         expressionAttributeNames: {
           '#version': 'version',
         },
-        resultPath: '$.dynamoResponse',
+        resultPath: JsonPath.DISCARD,
       },
     );
 
@@ -143,7 +143,6 @@ export class MigrationConstruct extends Construct {
       resultSelector: {
         // Item.version.N must be casted to a number
         value: JsonPath.stringToJson(JsonPath.stringAt('$.Item.version.N')),
-        '_dynamoResponse.$': '$',
       },
       resultPath: '$.currentVersion',
     });
@@ -173,7 +172,7 @@ export class MigrationConstruct extends Construct {
         version: getTargetVersionForDynamoDb(),
         metadata: getMetadata(),
       },
-      resultPath: '$.dynamoResponse',
+      resultPath: JsonPath.DISCARD,
     });
     successBranch
       .next(
@@ -215,7 +214,7 @@ export class MigrationConstruct extends Construct {
         ':status': DynamoAttributeValue.fromString(FAILURE_STATUS),
         ':metadata': getMetadata(),
       },
-      resultPath: '$.dynamoResponse',
+      resultPath: JsonPath.DISCARD,
     });
     jobFailed
       .next(
@@ -246,7 +245,7 @@ export class MigrationConstruct extends Construct {
 
     setupFirstVersionIfNotDefined.addCatch(shouldRunMigration, {
       errors: ['DynamoDB.ConditionalCheckFailedException'],
-      resultPath: '$.dynamoResponse',
+      resultPath: JsonPath.DISCARD,
     });
 
     shouldRunMigration.next(
