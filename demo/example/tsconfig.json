@@ -1,4 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "exclude": [ "cdk.out"]
+  "exclude": ["cdk.out"],
+  "references": [
+    {
+      "path": "../../cdk-dynamodb-migrator/tsconfig.base.json"
+    }
+  ]
 }

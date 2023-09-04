@@ -27,7 +27,7 @@
     "strictPropertyInitialization": true,
     "stripInternal": false,
     "target": "ES2020",
-    "composite": false,
+    "composite": true,
     "tsBuildInfoFile": "build/tsconfig.tsbuildinfo"
   },
   "include": ["**/*.ts"],

@@ -67,6 +67,7 @@
     "build": "jsii",
     "build:watch": "jsii --watch",
     "cdk": "cdk",
+    "deploy": "cdk deploy",
     "package": "jsii-pacmak",
     "test": "pnpm test-linter && pnpm test-type && pnpm test-unit",
     "test-linter": "eslint .",

@@ -10,7 +10,7 @@ import { MigrationStack } from '../lib';
 
 const app = new App();
 
-// TODO: move this in demo
+/** Simple stack to provide a lambda function to run migrations, for testing purposes. */
 class UserStack extends Stack {
   public runMigrationsFunction: IFunction;
 
