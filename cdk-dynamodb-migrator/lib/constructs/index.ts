@@ -7,6 +7,7 @@ import {
   Condition,
   Fail,
   JsonPath,
+  Pass,
   StateMachine,
   Succeed,
 } from 'aws-cdk-lib/aws-stepfunctions';
@@ -104,6 +105,18 @@ export class MigrationConstruct extends Construct {
 
     // STEPS
 
+    // Validate input
+    const validateInput = new Pass(this, 'ValidateInput', {
+      parameters: {
+        request: JsonPath.objectAt('$'),
+        // Validates targetVersion is a number
+        targetVersion: JsonPath.mathAdd(
+          JsonPath.numberAt('$.targetVersion'),
+          0,
+        ),
+      },
+    });
+
     // Check migration version
     const setupFirstVersionIfNotDefined = new DynamoPutItem(
       this,
@@ -125,7 +138,7 @@ export class MigrationConstruct extends Construct {
         expressionAttributeNames: {
           '#version': 'version',
         },
-        resultPath: '$.dynamoResponse',
+        resultPath: JsonPath.DISCARD,
       },
     );
 
@@ -143,13 +156,13 @@ export class MigrationConstruct extends Construct {
       resultSelector: {
         // Item.version.N must be casted to a number
         value: JsonPath.stringToJson(JsonPath.stringAt('$.Item.version.N')),
-        '_dynamoResponse.$': '$',
       },
       resultPath: '$.currentVersion',
     });
 
     // Run Migration
     const runMigrationsJob = new LambdaInvoke(this, 'RunMigrationJob', {
+      inputPath: '$.request',
       lambdaFunction: migrationLambdaFunction,
       resultSelector: {
         'payload.$': '$.Payload',
@@ -173,7 +186,7 @@ export class MigrationConstruct extends Construct {
         version: getTargetVersionForDynamoDb(),
         metadata: getMetadata(),
       },
-      resultPath: '$.dynamoResponse',
+      resultPath: JsonPath.DISCARD,
     });
     successBranch
       .next(
@@ -215,7 +228,7 @@ export class MigrationConstruct extends Construct {
         ':status': DynamoAttributeValue.fromString(FAILURE_STATUS),
         ':metadata': getMetadata(),
       },
-      resultPath: '$.dynamoResponse',
+      resultPath: JsonPath.DISCARD,
     });
     jobFailed
       .next(
@@ -241,12 +254,13 @@ export class MigrationConstruct extends Construct {
       );
 
     // STATE MACHINE ASSEMBLY
+    validateInput.next(setupFirstVersionIfNotDefined);
 
     setupFirstVersionIfNotDefined.next(shouldRunMigration);
 
     setupFirstVersionIfNotDefined.addCatch(shouldRunMigration, {
       errors: ['DynamoDB.ConditionalCheckFailedException'],
-      resultPath: '$.dynamoResponse',
+      resultPath: JsonPath.DISCARD,
     });
 
     shouldRunMigration.next(
@@ -274,10 +288,10 @@ export class MigrationConstruct extends Construct {
         .otherwise(jobFailed),
     );
 
+    const stateMachineDefinition = validateInput;
+
     new StateMachine(this, 'RunMigrationsStateMachine', {
-      definitionBody: ChainDefinitionBody.fromChainable(
-        setupFirstVersionIfNotDefined,
-      ),
+      definitionBody: ChainDefinitionBody.fromChainable(stateMachineDefinition),
       timeout: Duration.minutes(5),
     });
   }
