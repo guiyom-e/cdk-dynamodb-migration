@@ -1,23 +1,23 @@
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import { BillingMode, Table, AttributeType } from 'aws-cdk-lib/aws-dynamodb';
-import { Construct } from 'constructs';
+import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 import {
-  LambdaInvoke,
-  DynamoPutItem,
-  DynamoAttributeValue,
-  DynamoGetItem,
-  DynamoUpdateItem,
-} from 'aws-cdk-lib/aws-stepfunctions-tasks';
-import {
-  Fail,
-  Succeed,
+  ChainDefinitionBody,
   Choice,
   Condition,
-  StateMachine,
+  Fail,
   JsonPath,
-  ChainDefinitionBody,
+  StateMachine,
+  Succeed,
 } from 'aws-cdk-lib/aws-stepfunctions';
+import {
+  DynamoAttributeValue,
+  DynamoGetItem,
+  DynamoPutItem,
+  DynamoUpdateItem,
+  LambdaInvoke,
+} from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import { Construct } from 'constructs';
 
 const getMetadata = () =>
   DynamoAttributeValue.fromMap({
