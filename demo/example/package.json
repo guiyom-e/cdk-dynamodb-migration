@@ -7,9 +7,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.405.0",
     "aws-cdk-lib": "^2.94.0",
-    "cdk-dynamodb-migrator": "link:../../cdk-dynamodb-migrator",
-    "constructs": "^10.2.70",
-    "source-map-support": "^0.5.21"
+    "cdk-dynamodb-migrator": "workspace:*",
+    "constructs": "^10.2.70"
   },
   "devDependencies": {
     "@types/jest": "^29.5.4",
