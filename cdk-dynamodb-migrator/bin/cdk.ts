@@ -6,7 +6,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import path = require('path');
 
-import { MigrationStack } from '../lib/cdk-stack';
+import { MigrationStack } from '../lib';
 
 const app = new App();
 

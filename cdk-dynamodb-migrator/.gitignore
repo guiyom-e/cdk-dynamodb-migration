@@ -1,2 +1,7 @@
 build
 dist
+
+# JSII
+.jsii
+# Ignore JSII auto-generated tsconfig.json
+tsconfig.json
