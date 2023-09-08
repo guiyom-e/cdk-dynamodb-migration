@@ -159,9 +159,19 @@ export class MigrationConstruct extends Construct {
       resultPath: '$.currentVersion',
     });
 
-    // Run Migration
+    // Prepare migration
+    const prepareMigration = new Pass(this, 'PrepareMigration', {
+      parameters: {
+        currentVersion: JsonPath.numberAt('$.currentVersion.value'),
+        targetVersion: JsonPath.numberAt('$.targetVersion'),
+        parameters: JsonPath.objectAt('$.request'),
+      },
+      resultPath: '$',
+    });
+
+    // Run migration
     const runMigrationsJob = new LambdaInvoke(this, 'RunMigrationJob', {
-      inputPath: '$.request',
+      inputPath: '$',
       lambdaFunction: migrationLambdaFunction,
       resultSelector: {
         'payload.$': '$.Payload',
@@ -255,22 +265,24 @@ export class MigrationConstruct extends Construct {
     // STATE MACHINE ASSEMBLY
     validateInput.next(setupFirstVersionIfNotDefined);
 
-    setupFirstVersionIfNotDefined.next(shouldRunMigration);
+    setupFirstVersionIfNotDefined.next(prepareMigration);
 
-    setupFirstVersionIfNotDefined.addCatch(shouldRunMigration, {
+    setupFirstVersionIfNotDefined.addCatch(prepareMigration, {
       errors: ['DynamoDB.ConditionalCheckFailedException'],
       resultPath: JsonPath.DISCARD,
     });
+
+    prepareMigration.next(shouldRunMigration);
 
     shouldRunMigration.next(
       new Choice(this, 'ShouldRunMigration')
         .when(
           Condition.and(
             Condition.isNumeric('$.targetVersion'),
-            Condition.isNumeric('$.currentVersion.value'),
+            Condition.isNumeric('$.currentVersion'),
             Condition.numberGreaterThanJsonPath(
               '$.targetVersion',
-              '$.currentVersion.value',
+              '$.currentVersion',
             ),
           ),
           runMigrationsJob,
