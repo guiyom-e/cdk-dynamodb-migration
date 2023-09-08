@@ -7,7 +7,9 @@ export interface MigrateActionInputProps {
   version: number;
 }
 
+export type MigrationHandler = (props: MigrateActionInputProps) => Promise<MigrateActionResponseProps>;
+
 export interface Migration {
-  up: (props: MigrateActionInputProps) => Promise<MigrateActionResponseProps>;
-  down: (props: MigrateActionInputProps) => Promise<MigrateActionResponseProps>;
+  up: MigrationHandler
+  down: MigrationHandler
 }
