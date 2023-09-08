@@ -1,3 +1,4 @@
 packages:
   - 'cdk-dynamodb-migrator'
   - 'demo/*'
+  - 'packages/*'
