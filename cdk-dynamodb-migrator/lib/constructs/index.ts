@@ -40,7 +40,6 @@ interface TableMigration {
   table: Table;
 }
 
-/** @todo */
 interface GenericMigration {
   type: 'generic';
 }
