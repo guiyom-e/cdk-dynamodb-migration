@@ -82,7 +82,7 @@ export class MigrationStateMachine extends Construct {
       },
     );
 
-    const shouldRunMigration = new DynamoGetItem(this, 'GetCurrentVersion', {
+    const getCurrentVersion = new DynamoGetItem(this, 'GetCurrentVersion', {
       table: versioning.table,
       key: {
         [versioning.partitionKeyName]: DynamoAttributeValue.fromString(
@@ -98,6 +98,16 @@ export class MigrationStateMachine extends Construct {
         value: JsonPath.stringToJson(JsonPath.stringAt('$.Item.version.N')),
       },
       resultPath: '$.currentVersion',
+    });
+
+    // Prepare migration
+    const prepareMigration = new Pass(this, 'PrepareMigration', {
+      parameters: {
+        currentVersion: JsonPath.numberAt('$.currentVersion.value'),
+        targetVersion: JsonPath.numberAt('$.targetVersion'),
+        parameters: JsonPath.executionInput,
+      },
+      resultPath: '$',
     });
 
     // Run Migration
@@ -196,22 +206,26 @@ export class MigrationStateMachine extends Construct {
     // STATE MACHINE ASSEMBLY
     validateInput.next(setupFirstVersionIfNotDefined);
 
-    setupFirstVersionIfNotDefined.next(shouldRunMigration);
+    setupFirstVersionIfNotDefined.next(getCurrentVersion);
 
-    setupFirstVersionIfNotDefined.addCatch(shouldRunMigration, {
+    setupFirstVersionIfNotDefined.addCatch(getCurrentVersion, {
       errors: ['DynamoDB.ConditionalCheckFailedException'],
       resultPath: JsonPath.DISCARD,
     });
 
-    shouldRunMigration.next(
+    getCurrentVersion.next(prepareMigration);
+
+    prepareMigration.next(
       new Choice(this, 'ShouldRunMigration')
         .when(
           Condition.and(
             Condition.isNumeric('$.targetVersion'),
-            Condition.isNumeric('$.currentVersion.value'),
-            Condition.numberGreaterThanJsonPath(
-              '$.targetVersion',
-              '$.currentVersion.value',
+            Condition.isNumeric('$.currentVersion'),
+            Condition.not(
+              Condition.numberEqualsJsonPath(
+                '$.targetVersion',
+                '$.currentVersion',
+              ),
             ),
           ),
           runMigrationsJob,
