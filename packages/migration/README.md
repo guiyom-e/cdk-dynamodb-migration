@@ -1,4 +1,4 @@
-# @migration-helpers
+# migration-helpers
 
 A set of helpers for Database migrations
 
