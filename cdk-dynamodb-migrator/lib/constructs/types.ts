@@ -3,7 +3,7 @@ import { IFunction } from 'aws-cdk-lib/aws-lambda';
 
 /** Base migration method */
 interface GenericMigration {
-  type: 'generic';
+  type: 'lambda';
   migrationLambdaFunction: IFunction;
 }
 
