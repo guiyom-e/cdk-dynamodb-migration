@@ -1,8 +1,6 @@
 import { Migration } from 'migration-helpers';
 
-import { migration_162815072023 } from './162815072023-migration-number-2';
+import { migration_1 } from './migration_1';
+import { migration_2 } from './migration_2';
 
-export const migrationsToRun: Migration[] = [
-  migration_162815072023,
-  migration_162815072023,
-];
+export const migrationsToRun: Migration[] = [migration_1, migration_2];

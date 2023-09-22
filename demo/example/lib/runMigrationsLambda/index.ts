@@ -1,6 +1,7 @@
 import {
-  fetchTargetVersion,
-  getMigrationsHandlersToRun,
+  getMigrationsToRun,
+  getTargetVersion,
+  MigrateActionResponseProps,
 } from 'migration-helpers';
 
 import { migrationsToRun } from './migrations';
@@ -11,17 +12,20 @@ export const handler = async ({
 }: {
   currentVersion: number;
   targetVersion?: number;
-}): Promise<void> => {
+}): Promise<MigrateActionResponseProps> => {
   // target version is set to be the the hightest id of the migration (i.e latest migration)
   const definedTargetVersion =
-    targetVersion ?? fetchTargetVersion(migrationsToRun);
+    targetVersion ?? getTargetVersion(migrationsToRun);
   if (definedTargetVersion === undefined) {
     console.log('No migrations provided');
 
-    return;
+    return {
+      status: 'SUCCEEDED',
+      targetVersion: currentVersion,
+    };
   }
 
-  const migrationsHandlers = getMigrationsHandlersToRun({
+  const migrationsHandlers = getMigrationsToRun({
     targetVersion: definedTargetVersion,
     currentVersion,
     migrationsToRun,
@@ -32,5 +36,9 @@ export const handler = async ({
     const response = await migration();
     migration_response.push(response);
   }
-  console.log(migration_response);
+
+  return {
+    status: migration_response[0]?.status ?? 'SUCCEEDED',
+    targetVersion: definedTargetVersion,
+  };
 };
