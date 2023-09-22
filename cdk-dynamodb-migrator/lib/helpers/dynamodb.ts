@@ -23,3 +23,9 @@ export const getTargetVersionForDynamoDb = (): DynamoAttributeValue =>
     // targetVersion must be casted to a string when calling DynamoDB
     JsonPath.jsonToString(JsonPath.numberAt('$.targetVersion')),
   );
+
+export const getCurrentVersionForDynamoDb = (): DynamoAttributeValue =>
+  DynamoAttributeValue.numberFromString(
+    // currentVersion must be casted to a string when calling DynamoDB
+    JsonPath.jsonToString(JsonPath.numberAt('$.currentVersion')),
+  );

@@ -25,6 +25,7 @@ import {
   SUCCESS_STATUS,
 } from '../constants';
 import {
+  getCurrentVersionForDynamoDb,
   getMetadata,
   getTargetVersionForDynamoDb,
   getVersionSortKey,
@@ -133,6 +134,7 @@ export class MigrationStateMachine extends Construct {
           CURRENT_STATUS_SORT_KEY,
         ),
         status: DynamoAttributeValue.fromString(SUCCESS_STATUS),
+        previousVersion: getCurrentVersionForDynamoDb(),
         version: getTargetVersionForDynamoDb(),
         metadata: getMetadata(),
       },
@@ -148,10 +150,8 @@ export class MigrationStateMachine extends Construct {
             ),
             [versioning.sortKeyName]: getVersionSortKey(),
             status: DynamoAttributeValue.fromString(SUCCESS_STATUS),
-            // targetVersion must be casted to a string when calling DynamoDB
-            version: DynamoAttributeValue.numberFromString(
-              JsonPath.format('{}', JsonPath.stringAt('$.targetVersion')),
-            ),
+            previousVersion: getCurrentVersionForDynamoDb(),
+            targetVersion: getTargetVersionForDynamoDb(),
             metadata: getMetadata(),
           },
         }),
@@ -190,8 +190,8 @@ export class MigrationStateMachine extends Construct {
             ),
             [versioning.sortKeyName]: getVersionSortKey(),
             status: DynamoAttributeValue.fromString(FAILURE_STATUS),
-            // targetVersion must be casted to a string when calling DynamoDB
-            version: getTargetVersionForDynamoDb(),
+            previousVersion: getCurrentVersionForDynamoDb(),
+            targetVersion: getTargetVersionForDynamoDb(),
             metadata: getMetadata(),
           },
         }),
