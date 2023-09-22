@@ -25,9 +25,8 @@ import {
   SUCCESS_STATUS,
 } from '../constants';
 import {
-  getCurrentVersionForDynamoDb,
   getMetadata,
-  getTargetVersionForDynamoDb,
+  getVersionForDynamoDb,
   getVersionSortKey,
 } from '../helpers/dynamodb';
 
@@ -46,18 +45,6 @@ export class MigrationStateMachine extends Construct {
     } = props;
 
     // STEPS
-    // Validate input
-    const validateInput = new Pass(this, 'ValidateInput', {
-      parameters: {
-        request: JsonPath.objectAt('$'),
-        // Validates targetVersion is a number
-        targetVersion: JsonPath.mathAdd(
-          JsonPath.numberAt('$.targetVersion'),
-          0,
-        ),
-      },
-    });
-
     // Check migration version
     const setupFirstVersionIfNotDefined = new DynamoPutItem(
       this,
@@ -102,22 +89,39 @@ export class MigrationStateMachine extends Construct {
     });
 
     // Prepare migration
-    const prepareMigration = new Pass(this, 'PrepareMigration', {
-      parameters: {
-        currentVersion: JsonPath.numberAt('$.currentVersion.value'),
-        targetVersion: JsonPath.numberAt('$.targetVersion'),
-        parameters: JsonPath.executionInput,
+    const prepareMigrationWithTargetVersion = new Pass(
+      this,
+      'PrepareMigrationWithTargetVersion',
+      {
+        parameters: {
+          currentVersion: JsonPath.numberAt('$.currentVersion.value'),
+          targetVersion: JsonPath.numberAt('$.targetVersion'),
+          parameters: JsonPath.executionInput,
+        },
+        resultPath: '$',
       },
-      resultPath: '$',
-    });
+    );
+
+    const prepareMigrationWithoutTargetVersion = new Pass(
+      this,
+      'PrepareMigrationWithoutTargetVersion',
+      {
+        parameters: {
+          currentVersion: JsonPath.numberAt('$.currentVersion.value'),
+          parameters: JsonPath.executionInput,
+        },
+        resultPath: '$',
+      },
+    );
 
     // Run Migration
     const runMigrationsJob = new LambdaInvoke(this, 'RunMigrationJob', {
-      inputPath: '$.request',
       lambdaFunction: migrationLambdaFunction,
       resultSelector: {
         'payload.$': '$.Payload',
         'status.$': '$.Payload.status',
+        // Override targetVersion with migration response
+        'targetVersion.$': '$.Payload.targetVersion',
       },
       resultPath: '$.migrationResponse',
     });
@@ -134,8 +138,8 @@ export class MigrationStateMachine extends Construct {
           CURRENT_STATUS_SORT_KEY,
         ),
         status: DynamoAttributeValue.fromString(SUCCESS_STATUS),
-        previousVersion: getCurrentVersionForDynamoDb(),
-        version: getTargetVersionForDynamoDb(),
+        previousVersion: getVersionForDynamoDb('$.currentVersion'),
+        version: getVersionForDynamoDb('$.migrationResponse.targetVersion'),
         metadata: getMetadata(),
       },
       resultPath: JsonPath.DISCARD,
@@ -148,10 +152,14 @@ export class MigrationStateMachine extends Construct {
             [versioning.partitionKeyName]: DynamoAttributeValue.fromString(
               versioning.migrationPartitionKey,
             ),
-            [versioning.sortKeyName]: getVersionSortKey(),
+            [versioning.sortKeyName]: getVersionSortKey({
+              versionPath: '$.migrationResponse.targetVersion',
+            }),
             status: DynamoAttributeValue.fromString(SUCCESS_STATUS),
-            previousVersion: getCurrentVersionForDynamoDb(),
-            targetVersion: getTargetVersionForDynamoDb(),
+            previousVersion: getVersionForDynamoDb('$.currentVersion'),
+            targetVersion: getVersionForDynamoDb(
+              '$.migrationResponse.targetVersion',
+            ),
             metadata: getMetadata(),
           },
         }),
@@ -188,10 +196,14 @@ export class MigrationStateMachine extends Construct {
             [versioning.partitionKeyName]: DynamoAttributeValue.fromString(
               versioning.migrationPartitionKey,
             ),
-            [versioning.sortKeyName]: getVersionSortKey(),
+            [versioning.sortKeyName]: getVersionSortKey({
+              versionPath: '$.migrationResponse.targetVersion',
+            }),
             status: DynamoAttributeValue.fromString(FAILURE_STATUS),
-            previousVersion: getCurrentVersionForDynamoDb(),
-            targetVersion: getTargetVersionForDynamoDb(),
+            previousVersion: getVersionForDynamoDb('$.currentVersion'),
+            targetVersion: getVersionForDynamoDb(
+              '$.migrationResponse.targetVersion',
+            ),
             metadata: getMetadata(),
           },
         }),
@@ -204,8 +216,6 @@ export class MigrationStateMachine extends Construct {
       );
 
     // STATE MACHINE ASSEMBLY
-    validateInput.next(setupFirstVersionIfNotDefined);
-
     setupFirstVersionIfNotDefined.next(getCurrentVersion);
 
     setupFirstVersionIfNotDefined.addCatch(getCurrentVersion, {
@@ -213,9 +223,18 @@ export class MigrationStateMachine extends Construct {
       resultPath: JsonPath.DISCARD,
     });
 
-    getCurrentVersion.next(prepareMigration);
+    getCurrentVersion.next(
+      new Choice(this, 'IsTargetVersionDefined')
+        .when(
+          Condition.isPresent('$.targetVersion'),
+          prepareMigrationWithTargetVersion,
+        )
+        .otherwise(prepareMigrationWithoutTargetVersion),
+    );
 
-    prepareMigration.next(
+    prepareMigrationWithoutTargetVersion.next(runMigrationsJob);
+
+    prepareMigrationWithTargetVersion.next(
       new Choice(this, 'ShouldRunMigration')
         .when(
           Condition.and(
@@ -242,7 +261,7 @@ export class MigrationStateMachine extends Construct {
         .otherwise(jobFailed),
     );
 
-    const stateMachineDefinition = validateInput;
+    const stateMachineDefinition = setupFirstVersionIfNotDefined;
 
     new StateMachine(this, 'RunMigrationsStateMachine', {
       definitionBody: ChainDefinitionBody.fromChainable(stateMachineDefinition),

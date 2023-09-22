@@ -8,24 +8,22 @@ export const getMetadata = (): DynamoAttributeValue =>
     startedAt: DynamoAttributeValue.fromString(JsonPath.executionStartTime),
   });
 
-export const getVersionSortKey = (): DynamoAttributeValue =>
+export const getVersionSortKey = ({
+  versionPath,
+}: {
+  versionPath: string;
+}): DynamoAttributeValue =>
   DynamoAttributeValue.fromString(
     JsonPath.format(
       'VERSION_{}#{}#{}',
-      JsonPath.stringAt('$.targetVersion'),
+      JsonPath.stringAt(versionPath),
       JsonPath.executionStartTime,
       JsonPath.uuid(),
     ),
   );
 
-export const getTargetVersionForDynamoDb = (): DynamoAttributeValue =>
+export const getVersionForDynamoDb = (path: string): DynamoAttributeValue =>
   DynamoAttributeValue.numberFromString(
     // targetVersion must be casted to a string when calling DynamoDB
-    JsonPath.jsonToString(JsonPath.numberAt('$.targetVersion')),
-  );
-
-export const getCurrentVersionForDynamoDb = (): DynamoAttributeValue =>
-  DynamoAttributeValue.numberFromString(
-    // currentVersion must be casted to a string when calling DynamoDB
-    JsonPath.jsonToString(JsonPath.numberAt('$.currentVersion')),
+    JsonPath.jsonToString(JsonPath.numberAt(path)),
   );

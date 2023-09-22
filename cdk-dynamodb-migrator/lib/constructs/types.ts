@@ -19,4 +19,6 @@ export type VersioningSettings = {
   sortKeyName: string;
   /** Partition key value to use for the versioning purpose */
   migrationPartitionKey: string;
+  /** First version value */
+  firstVersion: number;
 };

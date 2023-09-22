@@ -5,6 +5,7 @@ import { Construct } from 'constructs';
 import { MigrationStateMachine } from './stateMachine';
 import { MigrationHandling, VersioningSettings } from './types';
 import {
+  DEFAULT_FIRST_VERSION,
   DEFAULT_MIGRATION_PARTITION_KEY,
   DEFAULT_PARTITION_KEY_NAME,
   DEFAULT_SORT_KEY_NAME,
@@ -52,6 +53,7 @@ export class MigrationConstruct extends Construct {
       migrationPartitionKey:
         settings?.versioning?.migrationPartitionKey ??
         DEFAULT_MIGRATION_PARTITION_KEY,
+      firstVersion: settings?.versioning?.firstVersion ?? DEFAULT_FIRST_VERSION,
     };
 
     // State machine
