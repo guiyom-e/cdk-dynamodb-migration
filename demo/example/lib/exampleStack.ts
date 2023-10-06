@@ -8,14 +8,16 @@ export class ExampleStack extends Stack {
     super(scope, id, props);
 
     new MigrationConstruct(this, 'DynamoDBMigrator', {
-      type: 'generic',
-      migrationLambdaFunction: new Function(this, 'MigrationLambdaFunction', {
-        runtime: Runtime.NODEJS_18_X,
-        handler: 'index.handler',
-        code: Code.fromInline(
-          'module.exports = {handler: async () => ({status: "SUCCEEDED"})};',
-        ),
-      }),
+      migrationHandling: {
+        type: 'lambda',
+        migrationLambdaFunction: new Function(this, 'MigrationLambdaFunction', {
+          runtime: Runtime.NODEJS_18_X,
+          handler: 'index.handler',
+          code: Code.fromInline(
+            'module.exports = {handler: async () => ({status: "SUCCEEDED"})};',
+          ),
+        }),
+      },
     });
   }
 }

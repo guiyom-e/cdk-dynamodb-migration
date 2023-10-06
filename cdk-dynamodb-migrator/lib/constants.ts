@@ -2,6 +2,7 @@
 export const DEFAULT_PARTITION_KEY_NAME = 'pk';
 export const DEFAULT_SORT_KEY_NAME = 'sk';
 export const DEFAULT_MIGRATION_PARTITION_KEY = '_migration';
+export const DEFAULT_FIRST_VERSION = 0;
 
 export const CURRENT_STATUS_SORT_KEY = 'CURRENT_STATUS';
 

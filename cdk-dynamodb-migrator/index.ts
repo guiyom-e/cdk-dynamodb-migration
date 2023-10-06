@@ -7,11 +7,12 @@ import {
   FAILURE_STATUS,
   SUCCESS_STATUS,
 } from './lib/constants';
+import { MigrationConstruct, MigrationConstructProps } from './lib/constructs';
 import {
-  MigrationConstruct,
-  MigrationConstructProps,
+  MigrationConfiguration,
+  MigrationHandling,
   VersioningSettings,
-} from './lib/constructs';
+} from './lib/constructs/types';
 
 export {
   DEFAULT_PARTITION_KEY_NAME,
@@ -20,9 +21,14 @@ export {
   CURRENT_STATUS_SORT_KEY,
   SUCCESS_STATUS,
   FAILURE_STATUS,
+  // Export Migration construct
   MigrationConstruct,
   MigrationConstructProps,
+  // Export Migration stack
   MigrationStack,
   MigrationStackProps,
+  // Export types
+  MigrationConfiguration,
+  MigrationHandling,
   VersioningSettings,
 };
