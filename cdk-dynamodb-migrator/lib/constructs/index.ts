@@ -2,7 +2,7 @@ import { StackProps } from 'aws-cdk-lib';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 
-import { MigrationStateMachine } from './stateMachine';
+import { MigrationStateMachine } from './stepFunctions/stateMachine';
 import { MigrationHandling, VersioningSettings } from './types';
 import {
   DEFAULT_FIRST_VERSION,
@@ -58,8 +58,12 @@ export class MigrationConstruct extends Construct {
 
     // State machine
     this.migrationStateMachine = new MigrationStateMachine(this, 'MSM', {
-      migrationHandling,
-      versioning: this.versioning,
+      configurations: [
+        {
+          migrationHandling,
+          versioning: this.versioning,
+        },
+      ],
     });
   }
 }
