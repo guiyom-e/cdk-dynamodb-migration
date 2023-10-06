@@ -6,7 +6,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import path = require('path');
 
-import { MigrationStack } from '../lib';
+import { MigrationStack, MultipleMigrationsStack } from '../lib';
 
 const app = new App();
 
@@ -39,5 +39,25 @@ new MigrationStack(app, 'MigrationStack', {
       migrationLambdaFunction: userStack.runMigrationsFunction,
     },
   },
+  settings: {},
+});
+
+new MultipleMigrationsStack(app, 'MultipleMigrationsStack', {
+  configurations: [
+    {
+      id: 'default',
+      migrationHandling: {
+        type: 'lambda',
+        migrationLambdaFunction: userStack.runMigrationsFunction,
+      },
+    },
+    {
+      id: 'second',
+      migrationHandling: {
+        type: 'lambda',
+        migrationLambdaFunction: userStack.runMigrationsFunction,
+      },
+    },
+  ],
   settings: {},
 });
