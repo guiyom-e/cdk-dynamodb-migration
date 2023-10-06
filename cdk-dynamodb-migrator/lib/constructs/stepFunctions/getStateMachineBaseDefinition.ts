@@ -46,10 +46,6 @@ export const getMigrationStateMachineBaseDefinition = (
   } = props;
 
   // STEPS
-  const getConfiguration = new Pass(scope, `GetConfiguration${definitionId}`, {
-    inputPath: JsonPath.stringAt(`$.configurations.[${props.index}]`),
-  });
-
   // Check migration version
   const setupFirstVersionIfNotDefined = new DynamoPutItem(
     scope,
@@ -237,8 +233,6 @@ export const getMigrationStateMachineBaseDefinition = (
     );
 
   // STATE MACHINE ASSEMBLY
-  getConfiguration.next(setupFirstVersionIfNotDefined);
-
   setupFirstVersionIfNotDefined.next(getCurrentVersion);
 
   setupFirstVersionIfNotDefined.addCatch(getCurrentVersion, {
@@ -284,7 +278,7 @@ export const getMigrationStateMachineBaseDefinition = (
       .otherwise(jobFailed),
   );
 
-  const stateMachineDefinition = getConfiguration;
+  const stateMachineDefinition = setupFirstVersionIfNotDefined;
 
   return stateMachineDefinition;
 };

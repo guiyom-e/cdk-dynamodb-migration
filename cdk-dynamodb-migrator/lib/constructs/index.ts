@@ -3,7 +3,7 @@ import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 
 import { MigrationStateMachine } from './stepFunctions/stateMachine';
-import { MigrationHandling, VersioningSettings } from './types';
+import { MigrationConfiguration, VersioningSettings } from './types';
 import {
   DEFAULT_FIRST_VERSION,
   DEFAULT_MIGRATION_PARTITION_KEY,
@@ -13,10 +13,7 @@ import {
 
 /** MigrationConstruct props */
 export type MigrationConstructProps = StackProps & {
-  configurations: {
-    id: string;
-    migrationHandling: MigrationHandling;
-  }[];
+  configuration: MigrationConfiguration;
   settings?: {
     versioning?: Partial<VersioningSettings>;
   };
@@ -29,7 +26,7 @@ export class MigrationConstruct extends Construct {
 
   constructor(scope: Construct, id: string, props: MigrationConstructProps) {
     super(scope, id);
-    const { configurations, settings } = props;
+    const { configuration, settings } = props;
 
     // Versioning
     const versioningPartitionKey =
@@ -61,7 +58,7 @@ export class MigrationConstruct extends Construct {
 
     // State machine
     this.migrationStateMachine = new MigrationStateMachine(this, 'MSM', {
-      configurations,
+      configuration,
       versioning: this.versioning,
     });
   }
