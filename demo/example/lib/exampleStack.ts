@@ -12,6 +12,7 @@ export class ExampleStack extends Stack {
     super(scope, id, props);
 
     const dinosaursTable = new Table(this, 'DinosaursTable', {
+      tableName: 'Dinosaurs',
       partitionKey: { name: 'dinosaurId', type: AttributeType.STRING },
     });
 

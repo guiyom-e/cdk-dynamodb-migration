@@ -11,30 +11,6 @@ import {
   DEFAULT_SORT_KEY_NAME,
 } from '../constants';
 
-/** @todo */
-interface TableMigration {
-  type: 'table';
-  table: Table;
-}
-
-interface GenericMigration {
-  type: 'generic';
-}
-
-type Migration = TableMigration | GenericMigration;
-
-/** Versioning settings of MigrationConstruct */
-export type VersioningSettings = {
-  /** DynamoDB table to store migration state and versions */
-  table: Table;
-  /** Partition key name of the versioning table */
-  partitionKeyName: string;
-  /** Sort key name of the versioning table */
-  sortKeyName: string;
-  /** Partition key value to use for the versioning purpose */
-  migrationPartitionKey: string;
-};
-
 /** MigrationConstruct props */
 export type MigrationConstructProps = StackProps & {
   configuration: MigrationConfiguration;
