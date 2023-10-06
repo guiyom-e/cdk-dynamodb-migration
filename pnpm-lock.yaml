@@ -131,8 +131,8 @@ importers:
         specifier: 2.94.0
         version: 2.94.0
       cdk:
-        specifier: ^2.94.0
-        version: 2.94.0
+        specifier: ^2.99.1
+        version: 2.99.1
       eslint:
         specifier: ^8.50.0
         version: 8.50.0
@@ -2624,6 +2624,14 @@ packages:
       fsevents: 2.3.2
     dev: true
 
+  /aws-cdk@2.99.1:
+    resolution: {integrity: sha512-uWg4xhBrHNoRMlEgvWzr0MacJ92dLFeJ5AvT7nruxrgShU1fgt/Rsxw1WCXSASaVUsIUGgtO+P89x8cRU2nf7w==}
+    engines: {node: '>= 14.15.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
   /axios@1.5.0:
     resolution: {integrity: sha512-D4DdjDo5CY50Qms0qGQTTw6Q44jl7zRwY7bthds06pUGfChBCTcQs+N743eFWGEd6pRTMd6A+I87aWyFV5wiZQ==}
     dependencies:
@@ -2834,12 +2842,12 @@ packages:
     resolution: {integrity: sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==}
     engines: {node: '>= 0.8.0'}
 
-  /cdk@2.94.0:
-    resolution: {integrity: sha512-dMgSTaMtfpPxY2biMSHlNrwrJcq0iJkihvkVuSSQyhlHyLmH0s9fSBzO8zrGFAoEp/cDofg6iDfGzmwrHQ55LA==}
+  /cdk@2.99.1:
+    resolution: {integrity: sha512-sac0+ms3WzF9YCNTq/4A971COX3NKPS7kxTk5v2s6YegF2BzsvDCPbM1iryAhPu816N3xJQy3R+5Zk96k0SrPQ==}
     engines: {node: '>= 14.15.0'}
     hasBin: true
     dependencies:
-      aws-cdk: 2.94.0
+      aws-cdk: 2.99.1
     dev: true
 
   /chalk@2.4.2:
