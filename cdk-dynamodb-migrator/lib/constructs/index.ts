@@ -13,7 +13,10 @@ import {
 
 /** MigrationConstruct props */
 export type MigrationConstructProps = StackProps & {
-  migrationHandling: MigrationHandling;
+  configurations: {
+    id: string;
+    migrationHandling: MigrationHandling;
+  }[];
   settings?: {
     versioning?: Partial<VersioningSettings>;
   };
@@ -26,7 +29,7 @@ export class MigrationConstruct extends Construct {
 
   constructor(scope: Construct, id: string, props: MigrationConstructProps) {
     super(scope, id);
-    const { migrationHandling, settings } = props;
+    const { configurations, settings } = props;
 
     // Versioning
     const versioningPartitionKey =
@@ -58,12 +61,8 @@ export class MigrationConstruct extends Construct {
 
     // State machine
     this.migrationStateMachine = new MigrationStateMachine(this, 'MSM', {
-      configurations: [
-        {
-          migrationHandling,
-          versioning: this.versioning,
-        },
-      ],
+      configurations,
+      versioning: this.versioning,
     });
   }
 }

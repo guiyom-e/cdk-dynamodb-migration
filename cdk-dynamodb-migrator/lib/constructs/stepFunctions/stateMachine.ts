@@ -8,26 +8,25 @@ import {
 import { Construct } from 'constructs';
 
 import { getMigrationStateMachineBaseDefinition } from './getStateMachineBaseDefinition';
-import { MigrationHandling, VersioningSettings } from '../types';
+import { MigrationConfiguration, VersioningSettings } from '../types';
 
 interface MigrationStateMachineProps {
-  configurations: [
-    {
-      migrationHandling: MigrationHandling;
-      versioning: VersioningSettings;
-    },
-  ];
+  configurations: MigrationConfiguration[];
+  versioning: VersioningSettings;
 }
 
 export class MigrationStateMachine extends Construct {
   constructor(scope: Construct, id: string, props: MigrationStateMachineProps) {
     super(scope, id);
 
-    const { configurations } = props;
+    const { configurations, versioning } = props;
 
     const defineDefaults = new Pass(this, 'DefineDefaults', {
       parameters: {
-        configurations: configurations.map((_, index) => ({ id: index })),
+        configurations: configurations.map((config, index) => ({
+          id: config.id,
+          index,
+        })),
       },
       resultPath: '$.inputDefaults',
     }).next(
@@ -45,7 +44,7 @@ export class MigrationStateMachine extends Construct {
     );
 
     const migrationBranches = configurations.map(
-      ({ migrationHandling, versioning }, configIndex) =>
+      ({ migrationHandling }, configIndex) =>
         getMigrationStateMachineBaseDefinition(this, {
           id: configIndex.toString(),
           index: configIndex,

@@ -32,9 +32,21 @@ class UserStack extends Stack {
 const userStack = new UserStack(app, 'UserStack');
 
 new MigrationStack(app, 'MigrationStack', {
-  migrationHandling: {
-    type: 'lambda',
-    migrationLambdaFunction: userStack.runMigrationsFunction,
-  },
+  configurations: [
+    {
+      id: '0',
+      migrationHandling: {
+        type: 'lambda',
+        migrationLambdaFunction: userStack.runMigrationsFunction,
+      },
+    },
+    {
+      id: '1',
+      migrationHandling: {
+        type: 'lambda',
+        migrationLambdaFunction: userStack.runMigrationsFunction,
+      },
+    },
+  ],
   settings: {},
 });

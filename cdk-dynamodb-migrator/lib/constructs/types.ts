@@ -9,6 +9,11 @@ interface GenericMigration {
 
 export type MigrationHandling = GenericMigration;
 
+export type MigrationConfiguration = {
+  id: string;
+  migrationHandling: MigrationHandling;
+};
+
 /** Versioning settings of MigrationConstruct */
 export type VersioningSettings = {
   /** DynamoDB table to store migration state and versions */
