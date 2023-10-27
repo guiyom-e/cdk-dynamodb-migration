@@ -9,4 +9,4 @@ These constructs contain a state machine (Step Functions) + a DynamoDB table to 
 
 They take as input a Lambda function which should perform migrations using a version number strictly increasing.
 Lambda input must extend: `{ targetVersion: number }`
-Lambda output must extend: `{ status: 'SUCCEEDED' | 'FAILED' }`
+Lambda output must extend: `{ status: 'SUCCEEDED' | 'FAILED', targetVersion: number }`
