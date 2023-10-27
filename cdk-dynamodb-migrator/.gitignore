@@ -5,3 +5,5 @@ dist
 .jsii
 # Ignore JSII auto-generated tsconfig.json
 tsconfig.json
+
+tsconfig.tsbuildinfo

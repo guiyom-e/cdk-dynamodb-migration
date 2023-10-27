@@ -31,7 +31,9 @@ jobs:
           ref: ${{ env.TARGET_SHA }}
       - name: '⚙️📦️ Install & cache node dependencies'
         uses: ./.github/actions/install-node-deps
-      - name: '⚙️🛠️ Build'
+      - name: '⚙️🔨 Build packages'
+        run: pnpm run package      
+      - name: '⚙️🔧 Build constructs'
         run: pnpm run build
       - name: '🧪🖼️ Test linter'
         run: pnpm run test-linter

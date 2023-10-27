@@ -21,6 +21,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm nx run-many --all --target=build",
+    "package": "pnpm nx run-many --all --target=package",
     "test": "pnpm nx run-many --all --target=test",
     "test-linter": "pnpm nx run-many --all --target=test-linter",
     "test-type": "pnpm nx run-many --all --target=test-type",
@@ -28,6 +29,7 @@
   },
   "workspaces": [
     "demo/*",
-    "cdk-dynamodb-migrator"
+    "cdk-dynamodb-migrator",
+    "packages/*"
   ]
 }
