@@ -23,7 +23,6 @@ export class MigrationStateMachine extends Construct {
 
     const definition = getMigrationStateMachineBaseDefinition(this, {
       id: configId,
-      index: 0,
       migrationHandling,
       versioning,
     });

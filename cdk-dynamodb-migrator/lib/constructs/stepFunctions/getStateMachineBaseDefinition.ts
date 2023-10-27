@@ -30,7 +30,6 @@ import { MigrationHandling, VersioningSettings } from '../types';
 
 interface MigrationStateMachineProps {
   id: string;
-  index: number;
   migrationHandling: MigrationHandling;
   versioning: VersioningSettings;
 }

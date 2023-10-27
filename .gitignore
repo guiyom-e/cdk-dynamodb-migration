@@ -4,6 +4,8 @@
 *.d.ts
 node_modules
 
+.nx/cache
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
