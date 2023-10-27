@@ -19,17 +19,29 @@ export const getMigrationsToRun = ({
   migrationsToRun: Migration[];
   targetVersion: number;
   currentVersion: number;
-}): MigrationHandler[] => {
+}): {
+  id: number;
+  handler: MigrationHandler;
+  direction: 'up' | 'down';
+}[] => {
   if (currentVersion < targetVersion) {
     return migrationsToRun
       .filter((migration) => migration.id <= targetVersion)
       .filter(isMigrationUp)
-      .map((migration) => migration.up);
+      .map((migration) => ({
+        id: migration.id,
+        handler: migration.up,
+        direction: 'up',
+      }));
   } else if (currentVersion > targetVersion) {
     return migrationsToRun
       .filter((migration) => migration.id >= targetVersion)
       .filter(isMigrationDown)
-      .map((migration) => migration.down);
+      .map((migration) => ({
+        id: migration.id,
+        handler: migration.down,
+        direction: 'down',
+      }));
   } else {
     return [];
   }

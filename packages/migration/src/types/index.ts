@@ -1,5 +1,5 @@
 export type {
   Migration,
   MigrationHandler,
-  MigrateActionResponseProps,
+  MigrateActionResponse,
 } from './migration';

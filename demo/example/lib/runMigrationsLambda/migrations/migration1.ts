@@ -3,7 +3,7 @@ import { Migration } from 'migration-helpers';
 
 const client = new DynamoDB({ region: 'eu-west-1' });
 
-export const migration_1: Migration = {
+export const migration1: Migration = {
   id: 1,
   up: async (): Promise<{ status: string }> => {
     try {
@@ -13,7 +13,7 @@ export const migration_1: Migration = {
       console.log('ERROR', err);
     }
     console.log('Some up migration happening here', 1);
-
+    // Modify the element and put it back in db
     return Promise.resolve({
       status: Math.random() < 0.01 ? 'FAILED' : 'SUCCEEDED',
     });

@@ -1,4 +1,4 @@
-export interface MigrateActionResponseProps {
+export interface MigrateActionResponse {
   status: string;
   targetVersion: number;
 }

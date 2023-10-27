@@ -1,10 +1,15 @@
 import {
   getMigrationsToRun,
   getTargetVersion,
-  MigrateActionResponseProps,
+  MigrateActionResponse,
 } from 'migration-helpers';
 
 import { migrationsToRun } from './migrations';
+
+interface HandlerResponse extends MigrateActionResponse {
+  appliedMigrations: { id: number; direction?: 'up' | 'down' }[];
+  error?: unknown;
+}
 
 export const handler = async ({
   currentVersion,
@@ -12,18 +17,10 @@ export const handler = async ({
 }: {
   currentVersion: number;
   targetVersion?: number;
-}): Promise<MigrateActionResponseProps> => {
+}): Promise<HandlerResponse> => {
   // target version is set to be the the hightest id of the migration (i.e latest migration)
   const definedTargetVersion =
     targetVersion ?? getTargetVersion(migrationsToRun);
-  if (definedTargetVersion === undefined) {
-    console.log('No migrations provided');
-
-    return {
-      status: 'SUCCEEDED',
-      targetVersion: currentVersion,
-    };
-  }
 
   const migrationsHandlers = getMigrationsToRun({
     targetVersion: definedTargetVersion,
@@ -31,14 +28,29 @@ export const handler = async ({
     migrationsToRun,
   });
 
-  const migration_response = [];
-  for (const migration of migrationsHandlers) {
-    const response = await migration();
-    migration_response.push(response);
+  const appliedMigrations: { id: number; direction?: 'up' | 'down' }[] = [
+    { id: currentVersion },
+  ];
+  try {
+    for (const migration of migrationsHandlers) {
+      await migration.handler();
+      appliedMigrations.push({
+        id: migration.id,
+        direction: migration.direction,
+      });
+    }
+  } catch (error) {
+    return {
+      status: 'FAILED',
+      targetVersion: definedTargetVersion,
+      appliedMigrations,
+      error,
+    };
   }
 
   return {
-    status: migration_response[0]?.status ?? 'SUCCEEDED',
+    status: 'SUCCEEDED',
     targetVersion: definedTargetVersion,
+    appliedMigrations,
   };
 };
