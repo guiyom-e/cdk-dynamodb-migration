@@ -82,8 +82,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.8.9)(ts-node@10.9.1)
       jsii:
-        specifier: ^5.2.20
-        version: 5.2.20
+        specifier: ^5.2.23
+        version: 5.2.23
       jsii-pacmak:
         specifier: ^1.91.0
         version: 1.91.0
@@ -2208,14 +2208,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@jsii/check-node@1.90.0:
-    resolution: {integrity: sha512-bHrSs/X0mX6rVgBySk6JB/VYiqIV0HkznthZ4lpLabrgTEistwBYXxTf1kgNzfmUbIt0EeETwxdLAY0sqHE/+A==}
-    engines: {node: '>= 14.17.0'}
-    dependencies:
-      chalk: 4.1.2
-      semver: 7.5.4
-    dev: true
-
   /@jsii/check-node@1.91.0:
     resolution: {integrity: sha512-K9UFkRe4uJNVp1O2o4OBM/3usba6Vw3XF1Mq3TVBAYl1EzpAiA62DojGp30+3zwFlb1lkavVj1hKlCrIWIuJhw==}
     engines: {node: '>= 14.17.0'}
@@ -3925,7 +3917,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.3.0-dev.20231027
+      typescript: 5.3.0-dev.20231101
     dev: true
 
   /duplexer@0.1.2:
@@ -4930,7 +4922,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -5900,12 +5892,12 @@ packages:
       - supports-color
     dev: true
 
-  /jsii@5.2.20:
-    resolution: {integrity: sha512-iXfSgEHGuE1OJBefZ7P3x+FwlEVaAV8M2blR6HWfg/IAmvBoCc1qbMPkQgUXRaXxH36HKR+BOFZ4n8QX0S2BXA==}
+  /jsii@5.2.23:
+    resolution: {integrity: sha512-OrQU4r4187z93ORCgjtMYKTomygNmIE8zMFqGohBjD4sCLqgzSB70O2KBTas8Hplz5iZULdxP3+6a8P3kr1MnQ==}
     engines: {node: '>= 16.14.0'}
     hasBin: true
     dependencies:
-      '@jsii/check-node': 1.90.0
+      '@jsii/check-node': 1.91.0
       '@jsii/spec': 1.91.0
       case: 1.6.3
       chalk: 4.1.2
@@ -6738,7 +6730,7 @@ packages:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     hasBin: true
     dependencies:
-      glob: 7.1.4
+      glob: 7.2.3
     dev: true
 
   /rollup@3.29.0:
@@ -7495,8 +7487,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript@5.3.0-dev.20231027:
-    resolution: {integrity: sha512-YFAOvfXqPu/aZg27Xc6/Ftvbm5YmjgGEsVocBYbh3iZWRoYTcN3kF29ZZIdgRhoqSIN89+W29p4bBChsfVor2g==}
+  /typescript@5.3.0-dev.20231101:
+    resolution: {integrity: sha512-yt5zz7L+TBfzeJhMA/tAEO1YU8J2DWsFN3LbeMslNPXL3S0lR3yvePdl6fXCk7QFjnfaRtXH0noNdWg2imHWXg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
