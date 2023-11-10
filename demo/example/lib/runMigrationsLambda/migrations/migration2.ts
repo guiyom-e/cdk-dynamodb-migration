@@ -1,4 +1,4 @@
-import { Migration } from 'dynamodb-migration-helpers';
+import { Migration } from 'migration-version-helpers';
 
 export const migration2: Migration = {
   id: 2,

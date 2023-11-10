@@ -7,17 +7,17 @@ This package is part of the cdk-dynamodb-migration project. See its documentatio
 # Installation
 
 ```bash
-pnpm add dynamodb-migration-helpers
+pnpm add migration-version-helpers
 ```
 
 or if using yarn
 
 ```bash
-yarn add dynamodb-migration-helpers
+yarn add migration-version-helpers
 ```
 
 or if using npm
 
 ```bash
-npm install dynamodb-migration-helpers
+npm install migration-version-helpers
 ```

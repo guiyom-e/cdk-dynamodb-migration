@@ -6,7 +6,7 @@
       "path": "../../cdk-dynamodb-migrator/tsconfig.base.json"
     },
     {
-      "path": "../../packages/migration/tsconfig.json"
+      "path": "../../packages/migration-version-helpers/tsconfig.json"
     }
   ]
 }
