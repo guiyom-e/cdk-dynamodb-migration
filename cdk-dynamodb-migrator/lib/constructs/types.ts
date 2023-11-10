@@ -4,13 +4,16 @@ import { IFunction } from 'aws-cdk-lib/aws-lambda';
 /** Base migration method */
 interface GenericMigration {
   type: 'lambda';
+  /** Lambda function to run migrations */
   migrationLambdaFunction: IFunction;
 }
 
 export type MigrationHandling = GenericMigration;
 
 export type MigrationConfiguration = {
+  /** Migration configuration id */
   id: string;
+  /** Migration handling configuration */
   migrationHandling: MigrationHandling;
 };
 
