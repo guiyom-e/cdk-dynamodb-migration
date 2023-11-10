@@ -10,7 +10,7 @@ See [documentation](./cdk-dynamodb-migrator/README.md)
 ## Migration version helpers
 
 A set of Typescript types and helpers to ease development of migration handlers.
-See [documentation](./cdk-dynamodb-migrator/README.md)
+See [documentation](./packages/migration-version-helpers/README.md)
 
 ## Demo example
 
