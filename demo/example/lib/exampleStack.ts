@@ -35,15 +35,7 @@ export class ExampleStack extends Stack {
         id: 'default',
         migrationHandling: {
           type: 'lambda',
-          migrationLambdaFunction: new NodejsFunction(
-            this,
-            'MigrationLambdaFunction',
-            {
-              runtime: Runtime.NODEJS_18_X,
-              handler: 'index.handler',
-              entry: path.join(__dirname, 'runMigrationsLambda/index.ts'),
-            },
-          ),
+          migrationLambdaFunction,
         },
       },
     });

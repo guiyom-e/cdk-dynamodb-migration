@@ -6,27 +6,57 @@ const client = new DynamoDB({ region: 'eu-west-1' });
 export const migration1: Migration = {
   id: 1,
   up: async (): Promise<{ status: string }> => {
+    console.log('MIGRATION_1_UP');
+
     try {
       const elements = await client.scan({ TableName: 'Dinosaurs' });
-      console.log('ELEMENTS', elements);
+      console.log('ELEMENTS_1_UP', elements);
+
+      const modifiedElements = elements.Items?.map((element) => ({
+        ...element,
+        eyeColor: { S: 'green' },
+      }));
+
+      if (modifiedElements === undefined) {
+        return { status: 'SUCCEEDED' };
+      }
+      await Promise.all(
+        modifiedElements.map((element) =>
+          client.putItem({ TableName: 'Dinosaurs', Item: element }),
+        ),
+      );
     } catch (err) {
       console.log('ERROR', err);
+
+      return Promise.resolve({ status: 'FAILED' });
     }
-    console.log('Some up migration happening here', 1);
+
     // Modify the element and put it back in db
-    return Promise.resolve({
-      status: Math.random() < 0.01 ? 'FAILED' : 'SUCCEEDED',
-    });
+    return { status: 'SUCCEEDED' };
   },
   down: async (): Promise<{ status: string }> => {
-    console.log('Some down migration happening here', 1);
+    console.log('MIGRATION_1_DOWN');
     try {
       const elements = await client.scan({ TableName: 'Dinosaurs' });
       console.log('ELEMENTS down', elements);
+
+      const modifiedElements = elements.Items?.map(
+        ({ eyeColor, ...rest }) => rest,
+      );
+
+      if (modifiedElements === undefined) {
+        return { status: 'SUCCEEDED' };
+      }
+      await Promise.all(
+        modifiedElements.map((element) =>
+          client.putItem({ TableName: 'Dinosaurs', Item: element }),
+        ),
+      );
     } catch (err) {
       console.log('ERROR down', err);
+
+      return Promise.resolve({ status: 'FAILED' });
     }
-    console.log('Some up migration happening here', 1);
 
     return Promise.resolve({ status: 'SUCCEEDED' });
   },
