@@ -13,8 +13,11 @@ import {
 
 /** MigrationConstruct props */
 export type MigrationConstructProps = StackProps & {
+  /** Migration configuration */
   configuration: MigrationConfiguration;
+  /** Migration system settings */
   settings?: {
+    /** Versioning settings */
     versioning?: Partial<VersioningSettings>;
   };
 };

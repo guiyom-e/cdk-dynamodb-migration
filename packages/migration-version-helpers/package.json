@@ -1,5 +1,5 @@
 {
-  "name": "dynamodb-migration-helpers",
+  "name": "migration-version-helpers",
   "description": "A set of helpers for DynamoDB migrations",
   "version": "0.1.0",
   "license": "MIT",
