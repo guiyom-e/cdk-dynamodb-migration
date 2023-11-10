@@ -1,4 +1,4 @@
-# migration-helpers
+# DynamoDB migration helpers
 
 A set of helpers for Database migrations
 
@@ -7,17 +7,17 @@ This package is part of the cdk-dynamodb-migration project. See its documentatio
 # Installation
 
 ```bash
-pnpm add migration-helpers
+pnpm add dynamodb-migration-helpers
 ```
 
 or if using yarn
 
 ```bash
-yarn add migration-helpers
+yarn add dynamodb-migration-helpers
 ```
 
 or if using npm
 
 ```bash
-npm install migration-helpers
+npm install dynamodb-migration-helpers
 ```

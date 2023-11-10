@@ -1,6 +1,6 @@
 {
-  "name": "migration-helpers",
-  "description": "A set of helpers for migrations",
+  "name": "dynamodb-migration-helpers",
+  "description": "A set of helpers for DynamoDB migrations",
   "version": "0.1.0",
   "license": "MIT",
   "sideEffects": false,
@@ -29,6 +29,8 @@
   },
   "devDependencies": {
     "@types/node": "^18.16.1",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "concurrently": "^8.0.0",
     "esbuild": "0.16.17",
     "eslint": "^8.29.0",

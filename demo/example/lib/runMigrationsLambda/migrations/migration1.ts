@@ -1,5 +1,5 @@
 import { DynamoDB } from '@aws-sdk/client-dynamodb';
-import { Migration } from 'migration-helpers';
+import { Migration } from 'dynamodb-migration-helpers';
 
 const client = new DynamoDB({ region: 'eu-west-1' });
 

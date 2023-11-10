@@ -1,4 +1,4 @@
-import { Migration } from 'migration-helpers';
+import { Migration } from 'dynamodb-migration-helpers';
 
 import { migration1 } from './migration1';
 import { migration2 } from './migration2';

@@ -9,7 +9,7 @@
     "aws-cdk-lib": "^2.103.1",
     "cdk-dynamodb-migrator": "workspace:*",
     "constructs": "^10.3.0",
-    "migration-helpers": "0.1.0"
+    "dynamodb-migration-helpers": "0.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.6",

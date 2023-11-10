@@ -2,7 +2,7 @@ import {
   getMigrationsToRun,
   getTargetVersion,
   MigrateActionResponse,
-} from 'migration-helpers';
+} from 'dynamodb-migration-helpers';
 
 import { migrationsToRun } from './migrations';
 

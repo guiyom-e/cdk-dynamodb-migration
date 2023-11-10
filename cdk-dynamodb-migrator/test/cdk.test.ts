@@ -1,22 +1,31 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
-
-import { MigrationStack } from '../lib';
+import {
+  Code,
+  Function as LambdaFunction,
+  Runtime,
+} from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 
+import { MigrationStack } from '../lib';
+
 class StackWithLambda extends Stack {
-  public runMigrationsFunction: Function;
+  public runMigrationsFunction: LambdaFunction;
+
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    this.runMigrationsFunction = new Function(this, 'runMigrationsFunction', {
-      runtime: Runtime.NODEJS_18_X,
-      handler: 'index.handler',
-      code: Code.fromInline(
-        "module.exports = { handler: async ({ currentVersion }) => ({ status: 'SUCCEEDED', targetVersion: currentVersion + 1 }) };",
-      ),
-    });
+    this.runMigrationsFunction = new LambdaFunction(
+      this,
+      'runMigrationsFunction',
+      {
+        runtime: Runtime.NODEJS_18_X,
+        handler: 'index.handler',
+        code: Code.fromInline(
+          "module.exports = { handler: async ({ currentVersion }) => ({ status: 'SUCCEEDED', targetVersion: currentVersion + 1 }) };",
+        ),
+      },
+    );
   }
 }
 
