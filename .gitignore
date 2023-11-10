@@ -3,7 +3,7 @@
 !.eslintrc.js
 *.d.ts
 node_modules
-
+coverage
 .nx/cache
 
 # CDK asset staging directory
