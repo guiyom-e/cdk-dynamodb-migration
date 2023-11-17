@@ -8,5 +8,6 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.validate": ["javascript", "typescript"],
-  "jest.autoRun": "off"
+  "jest.autoRun": "off",
+  "jest.autoRevealOutput": "off"
 }

@@ -14,7 +14,9 @@
     "cdk": "bin/cdk.js"
   },
   "dependencies": {
+    "@aws-sdk/client-sfn": "^3.413.0",
     "aws-cdk-lib": "2.94.0",
+    "cfn-response": "^1.0.1",
     "constructs": "^10.2.70"
   },
   "devDependencies": {

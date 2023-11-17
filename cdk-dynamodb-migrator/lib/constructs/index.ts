@@ -20,6 +20,7 @@ import {
 } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
+import { AutoRunMigrationsOnDeploy } from './custom-resource/config';
 import {
   CURRENT_STATUS_SORT_KEY,
   DEFAULT_MIGRATION_PARTITION_KEY,
@@ -301,9 +302,13 @@ export class MigrationConstruct extends Construct {
 
     const stateMachineDefinition = validateInput;
 
-    new StateMachine(this, 'RunMigrationsStateMachine', {
+    const stateMachine = new StateMachine(this, 'RunMigrationsStateMachine', {
       definitionBody: ChainDefinitionBody.fromChainable(stateMachineDefinition),
       timeout: Duration.minutes(5),
+    });
+
+    new AutoRunMigrationsOnDeploy(this, 'AutoDeployCR', {
+      customResourceStateMachine: stateMachine,
     });
   }
 }
