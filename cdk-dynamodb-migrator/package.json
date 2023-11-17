@@ -34,8 +34,9 @@
     "typescript": "~5.2.2"
   },
   "files": [
-    "lib/**/*.js",
-    "lib/**/*.d.ts"
+    "build/**/*.js",
+    "build/**/*.d.ts",
+    ".jsii"
   ],
   "jsii": {
     "outdir": "dist",

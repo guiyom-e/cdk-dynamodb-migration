@@ -1,7 +1,7 @@
 {
   "name": "migration-version-helpers",
   "description": "A set of helpers for migrations",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Zineb El Bachiri"
   },
@@ -34,6 +34,12 @@
   "license": "MIT",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
+  "packageManager": "pnpm@8.10.5",
+  "repository": {
+    "url": "https://github.com/guiyom-e/cdk-dynamodb-migration",
+    "directory": "/packages/migration-version-helpers",
+    "type": "git"
+  },
   "scripts": {
     "format-check": "prettier --check . --ignore-path ../../.prettierignore",
     "format-fix": "prettier --write . --ignore-path ../../.prettierignore",
