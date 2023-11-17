@@ -1,13 +1,19 @@
-export interface MigrateActionResponse {
-  status: string;
+export interface MigrateHandlerResponse {
+  status: 'SUCCEEDED' | 'FAILED';
   targetVersion: number;
 }
 
-export type MigrationHandler = () => Promise<{ status: string }>;
+export type MigrationFunction<T = unknown> = () => Promise<T>;
 
-export interface Migration {
+export type MigrationOperator<T = unknown> = {
+  id: number;
+  handler: MigrationFunction<T>;
+  direction: 'up' | 'down';
+};
+
+export interface Migration<T = unknown> {
   id: number;
   description?: string;
-  up: MigrationHandler | undefined;
-  down: MigrationHandler | undefined;
+  up: MigrationFunction<T> | undefined;
+  down: MigrationFunction<T> | undefined;
 }

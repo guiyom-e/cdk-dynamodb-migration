@@ -21,6 +21,8 @@
   "private": true,
   "scripts": {
     "build": "pnpm nx run-many --all --target=build",
+    "deploy": "pnpm nx run-many --all --target=deploy",
+    "format-package": "syncpack format",
     "package": "pnpm nx run-many --all --target=package",
     "test": "pnpm nx run-many --all --target=test",
     "test-linter": "pnpm nx run-many --all --target=test-linter",

@@ -5,14 +5,14 @@
   "author": {
     "name": "Guillaume Égée"
   },
+  "bin": {
+    "cdk": "bin/cdk.js"
+  },
   "contributors": [
     {
       "name": "Zineb El Bachiri"
     }
   ],
-  "bin": {
-    "cdk": "bin/cdk.js"
-  },
   "dependencies": {
     "aws-cdk-lib": "2.103.1",
     "constructs": "^10.3.0"
@@ -66,9 +66,23 @@
       "bin/**/*.ts"
     ]
   },
+  "keywords": [
+    "aws",
+    "awscdk",
+    "cdk",
+    "database",
+    "dynamodb",
+    "migration",
+    "stepfunction"
+  ],
   "license": "MIT",
   "main": "./build/index.js",
-  "repository": "guiyom-e/cdk-dynamodb-migration",
+  "packageManager": "pnpm@8.10.5",
+  "repository": {
+    "url": "https://github.com/guiyom-e/cdk-dynamodb-migration",
+    "directory": "/cdk-dynamodb-migrator",
+    "type": "git"
+  },
   "scripts": {
     "build": "jsii",
     "build:watch": "jsii --watch",

@@ -7,12 +7,14 @@ import { MigrationConstruct } from 'cdk-dynamodb-migrator';
 import { Construct } from 'constructs';
 import path from 'path';
 
+import { TABLE_NAME } from './constants';
+
 export class ExampleStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
 
     const dinosaursTable = new Table(this, 'DinosaursTable', {
-      tableName: 'Dinosaurs',
+      tableName: TABLE_NAME,
       partitionKey: { name: 'dinosaurId', type: AttributeType.STRING },
     });
 

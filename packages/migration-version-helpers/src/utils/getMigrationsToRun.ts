@@ -1,29 +1,29 @@
-import { Migration, MigrationHandler } from 'types';
+import { Migration, MigrationFunction, MigrationOperator } from 'types';
 
-type MigrationUp = Migration & { up: MigrationHandler };
-type MigrationDown = Migration & { down: MigrationHandler };
+type MigrationUp<T = unknown> = Migration<T> & { up: MigrationFunction<T> };
+type MigrationDown<T = unknown> = Migration<T> & { down: MigrationFunction<T> };
 
-const isMigrationUp = (migration: Migration): migration is MigrationUp => {
+const isMigrationUp = <T = unknown>(
+  migration: Migration<T>,
+): migration is MigrationUp<T> => {
   return migration.up !== undefined;
 };
 
-const isMigrationDown = (migration: Migration): migration is MigrationDown => {
+const isMigrationDown = <T = unknown>(
+  migration: Migration<T>,
+): migration is MigrationDown<T> => {
   return migration.down !== undefined;
 };
 
-export const getMigrationsToRun = ({
+export const getMigrationsToRun = <T = unknown>({
   migrationsToRun,
   targetVersion,
   currentVersion,
 }: {
-  migrationsToRun: Migration[];
+  migrationsToRun: Migration<T>[];
   targetVersion: number;
   currentVersion: number;
-}): {
-  id: number;
-  handler: MigrationHandler;
-  direction: 'up' | 'down';
-}[] => {
+}): MigrationOperator<T>[] => {
   if (currentVersion < targetVersion) {
     return migrationsToRun
       .filter((migration) => migration.id <= targetVersion)

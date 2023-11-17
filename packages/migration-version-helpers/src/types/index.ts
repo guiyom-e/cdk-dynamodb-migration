@@ -1,5 +1,6 @@
 export type {
   Migration,
-  MigrationHandler,
-  MigrateActionResponse,
+  MigrationFunction,
+  MigrationOperator,
+  MigrateHandlerResponse,
 } from './migration';

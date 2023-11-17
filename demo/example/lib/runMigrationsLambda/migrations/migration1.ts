@@ -1,63 +1,70 @@
 import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { Migration } from 'migration-version-helpers';
 
-const client = new DynamoDB({ region: 'eu-west-1' });
+import { DEFAULT_AWS_REGION, TABLE_NAME } from '../../constants';
+
+const client = new DynamoDB({ region: DEFAULT_AWS_REGION });
+
+type Result = {
+  isComplete: boolean;
+  count: number;
+};
 
 export const migration1: Migration = {
   id: 1,
-  up: async (): Promise<{ status: string }> => {
+  description: 'Add green eye color to all dinosaurs',
+  up: async (): Promise<Result> => {
     console.log('MIGRATION_1_UP');
 
-    try {
-      const elements = await client.scan({ TableName: 'Dinosaurs' });
-      console.log('ELEMENTS_1_UP', elements);
+    // ⚠️ WARN: DynamoDB scan may not return all items in the table. A proper way to handle all items is to iterate while LastEvaluatedKey is not undefined.
+    const dinosaursScanResult = await client.scan({ TableName: TABLE_NAME });
+    console.log('DINOSAURS_1_UP', dinosaursScanResult);
 
-      const modifiedElements = elements.Items?.map((element) => ({
-        ...element,
-        eyeColor: { S: 'green' },
-      }));
+    const modifiedElements = dinosaursScanResult.Items?.map((element) => ({
+      ...element,
+      eyeColor: { S: 'green' },
+    }));
 
-      if (modifiedElements === undefined) {
-        return { status: 'SUCCEEDED' };
-      }
-      await Promise.all(
-        modifiedElements.map((element) =>
-          client.putItem({ TableName: 'Dinosaurs', Item: element }),
-        ),
-      );
-    } catch (err) {
-      console.log('ERROR', err);
-
-      return Promise.resolve({ status: 'FAILED' });
+    if (modifiedElements === undefined) {
+      return { isComplete: true, count: 0 };
     }
 
-    // Modify the element and put it back in db
-    return { status: 'SUCCEEDED' };
+    // 💡 NB: DynamoDB batchWriteItem should be used for better performances
+    // ⚠️ WARN: this method to put items in batch is not reliable, as one failure would stop the whole batch
+    await Promise.all(
+      modifiedElements.map((element) =>
+        client.putItem({ TableName: TABLE_NAME, Item: element }),
+      ),
+    );
+
+    return {
+      isComplete: dinosaursScanResult.LastEvaluatedKey === undefined,
+      count: dinosaursScanResult.Count ?? 0,
+    };
   },
-  down: async (): Promise<{ status: string }> => {
+  down: async (): Promise<Result> => {
     console.log('MIGRATION_1_DOWN');
-    try {
-      const elements = await client.scan({ TableName: 'Dinosaurs' });
-      console.log('ELEMENTS down', elements);
+    const dinosaursScanResult = await client.scan({ TableName: TABLE_NAME });
+    console.log('DINOSAURS_1_DOWN', dinosaursScanResult);
 
-      const modifiedElements = elements.Items?.map(
-        ({ eyeColor, ...rest }) => rest,
-      );
+    const modifiedElements = dinosaursScanResult.Items?.map(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- eyeColor is removed intentionally
+      ({ eyeColor, ...rest }) => rest,
+    );
 
-      if (modifiedElements === undefined) {
-        return { status: 'SUCCEEDED' };
-      }
-      await Promise.all(
-        modifiedElements.map((element) =>
-          client.putItem({ TableName: 'Dinosaurs', Item: element }),
-        ),
-      );
-    } catch (err) {
-      console.log('ERROR down', err);
-
-      return Promise.resolve({ status: 'FAILED' });
+    if (modifiedElements === undefined) {
+      return { isComplete: true, count: 0 };
     }
 
-    return Promise.resolve({ status: 'SUCCEEDED' });
+    await Promise.all(
+      modifiedElements.map((element) =>
+        client.putItem({ TableName: TABLE_NAME, Item: element }),
+      ),
+    );
+
+    return {
+      isComplete: dinosaursScanResult.LastEvaluatedKey === undefined,
+      count: dinosaursScanResult.Count ?? 0,
+    };
   },
 };
