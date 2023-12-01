@@ -20,7 +20,7 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "prettier": "^2.8.1",
     "tsc-alias": "^1.8.2",
-    "tsup": "^6.7.0",
+    "tsup": "^8.0.1",
     "typescript": "^5.0.0"
   },
   "files": [
