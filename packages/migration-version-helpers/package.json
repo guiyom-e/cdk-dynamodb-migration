@@ -15,7 +15,7 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "concurrently": "^8.2.2",
-    "esbuild": "0.16.17",
+    "esbuild": "0.19.8",
     "eslint": "^8.53.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "prettier": "^2.8.1",
