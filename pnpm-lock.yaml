@@ -51,8 +51,8 @@ importers:
   cdk-dynamodb-migrator:
     dependencies:
       aws-cdk-lib:
-        specifier: 2.103.1
-        version: 2.103.1(constructs@10.3.0)
+        specifier: 2.113.0
+        version: 2.113.0(constructs@10.3.0)
       constructs:
         specifier: ^10.3.0
         version: 10.3.0
@@ -106,8 +106,8 @@ importers:
         specifier: ^3.437.0
         version: 3.437.0
       aws-cdk-lib:
-        specifier: ^2.103.1
-        version: 2.103.1(constructs@10.3.0)
+        specifier: ^2.113.0
+        version: 2.113.0(constructs@10.3.0)
       cdk-dynamodb-migrator:
         specifier: workspace:*
         version: link:../../cdk-dynamodb-migrator
@@ -116,7 +116,7 @@ importers:
         version: 10.3.0
       migration-version-helpers:
         specifier: 0.1.0
-        version: link:../../packages/migration-version-helpers
+        version: 0.1.0
     devDependencies:
       '@types/jest':
         specifier: ^29.5.6
@@ -3224,8 +3224,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /aws-cdk-lib@2.103.1(constructs@10.3.0):
-    resolution: {integrity: sha512-Y9P4dv+vdfTiqTGeYebajQ30OiPgsIDGonpaxjQYA1A4RYemYu62bX1J+QQBJh7FNd3amybD7YgJe3jKIUQuHw==}
+  /aws-cdk-lib@2.113.0(constructs@10.3.0):
+    resolution: {integrity: sha512-wZYooUd8nb3ADFtg1dSnsRt1MJmeqEK8cKOnPfCGCfm852YnVdb0qIEclURCQ4ygDJSuqiw9CE+xWVeTQTG6Dw==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
@@ -3906,7 +3906,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231110
+      typescript: 5.4.0-dev.20231201
     dev: true
 
   /duplexer@0.1.2:
@@ -5981,6 +5981,10 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /migration-version-helpers@0.1.0:
+    resolution: {integrity: sha512-oly54QujgwzDLfrfn6Bc2TKKHdGQRkZU1upmK3EAldZOvhweT3gwj4mfwXIT60HMaRAGcxc5G802TMSLFsCL7g==}
+    dev: false
+
   /mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -7347,8 +7351,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript@5.4.0-dev.20231110:
-    resolution: {integrity: sha512-qjv4JVUYWbRy3e9lERotuHaowzq4ozFnip00m+8m4cPjCSZfPIf4svC9V20hrQMZSSTldDvf7O66CmAiZo1HNA==}
+  /typescript@5.4.0-dev.20231201:
+    resolution: {integrity: sha512-v1fwNXyXtvYekwCVTJ/8ZmOdeAiL+AOeECmka/AWWGOvm6TRaWgW9DKrBNmKcKrurYEvYo/X+l6iM902esGS1Q==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
