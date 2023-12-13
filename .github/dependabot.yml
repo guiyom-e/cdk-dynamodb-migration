@@ -6,14 +6,20 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
+    # Disable version updates for npm dependencies
+    open-pull-requests-limit: 0
     directory: "/"
     schedule:
       interval: "monthly"
   - package-ecosystem: "npm"
+    # Disable version updates for npm dependencies
+    open-pull-requests-limit: 0
     directory: "/cdk-dynamodb-migrator/"
     schedule:
       interval: "monthly"
   - package-ecosystem: "npm"
+    # Disable version updates for npm dependencies
+    open-pull-requests-limit: 0
     directory: "/demo/example/"
     schedule:
       interval: "monthly"
