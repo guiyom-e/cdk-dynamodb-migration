@@ -116,7 +116,7 @@ importers:
         version: 10.3.0
       migration-version-helpers:
         specifier: 0.1.0
-        version: link:../../packages/migration-version-helpers
+        version: 0.1.0
     devDependencies:
       '@types/jest':
         specifier: ^29.5.6
@@ -3258,7 +3258,7 @@ packages:
   /axios@1.6.0:
     resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
     dependencies:
-      follow-redirects: 1.15.3
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -3906,7 +3906,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231110
+      typescript: 5.5.0-dev.20240316
     dev: true
 
   /duplexer@0.1.2:
@@ -4598,8 +4598,8 @@ packages:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
     dev: true
 
-  /follow-redirects@1.15.3:
-    resolution: {integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==}
+  /follow-redirects@1.15.6:
+    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -5981,6 +5981,10 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /migration-version-helpers@0.1.0:
+    resolution: {integrity: sha512-oly54QujgwzDLfrfn6Bc2TKKHdGQRkZU1upmK3EAldZOvhweT3gwj4mfwXIT60HMaRAGcxc5G802TMSLFsCL7g==}
+    dev: false
+
   /mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -7347,8 +7351,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript@5.4.0-dev.20231110:
-    resolution: {integrity: sha512-qjv4JVUYWbRy3e9lERotuHaowzq4ozFnip00m+8m4cPjCSZfPIf4svC9V20hrQMZSSTldDvf7O66CmAiZo1HNA==}
+  /typescript@5.5.0-dev.20240316:
+    resolution: {integrity: sha512-pA1B+Y6sESEbRysnkS6A4yNqIp0KveaiEKYDke+VDIBFBED2KZ/eH44Cmw877lUjBS5cwXRE20YzEwyMbAlITQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
